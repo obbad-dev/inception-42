@@ -5,3 +5,7 @@ RUN apt-get update && \
         mariadb-client \
 	&& apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /run/mysqld && \
+    chown -R mysql:mysql /run/mysqld /var/lib/mysql
+
+CMD ["mariadbd", "--user=mysql"]
