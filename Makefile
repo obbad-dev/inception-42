@@ -1,10 +1,9 @@
 all:
-	sudo mkdir -p /home/oobbad/data/mariadb
-	sudo mkdir -p /home/oobbad/data/wordpress
-	sudo chown -R oualid:oualid /home/oobbad/data
+	mkdir -p /home/oualid/data/mariadb
+	mkdir -p /home/oualid/data/wordpress
 
-	docker volume create --driver local --opt type=none --opt device=/home/oobbad/data/mariadb --opt o=bind mariadb_data
-	docker volume create --driver local --opt type=none --opt device=/home/oobbad/data/wordpress --opt o=bind wordpress_data
+	docker volume create --driver local --opt type=none --opt device=/home/oualid/data/mariadb --opt o=bind mariadb_data
+	docker volume create --driver local --opt type=none --opt device=/home/oualid/data/wordpress --opt o=bind wordpress_data
 
 	docker network create inception || true
 	docker build -t mariadb:image ./srcs/requirements/mariadb
@@ -37,5 +36,5 @@ clean:
 	docker rmi wordpress:image
 	docker rmi nginx:image
 	docker rmi mariadb:image
-	sudo rm -rf /home/oobbad/data/*
+	sudo rm -rf /home/oualid/data/*
 	

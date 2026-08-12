@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -e
 
 if [ -f /run/secrets/db_root_password ]; then

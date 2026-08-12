@@ -1,4 +1,5 @@
 FROM debian:12
+
 RUN apt-get update && apt-get install -y nginx openssl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
@@ -9,6 +10,9 @@ RUN mkdir -p /etc/nginx/certs && \
 		-keyout /etc/nginx/certs/server.key \
 		-out /etc/nginx/certs/server.crt \
 		-subj "/C=MA/ST=Rabat-sale/L=Rabat/O=UM6P-1337/OU=1337-cluster-1/CN=oobbad.42.fr"
-COPY nginx.conf /etc/nginx/sites-enabled/
+
+COPY config/nginx.conf /etc/nginx/sites-enabled/
+
 EXPOSE 443
+
 CMD ["nginx", "-g", "daemon off;"]
