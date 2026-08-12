@@ -19,10 +19,8 @@ all:
 		mariadb:image
 
 	docker run -d --name wordpress --network inception \
+		--env-file ./srcs/.env \
 		-v $$(pwd)/secrets/credentials.txt:/run/secrets/credentials.txt:ro \
-		-v $$(pwd)/secrets/db_password.txt:/run/secrets/db_password:ro \
-		-v $$(pwd)/secrets/wp_admin_password.txt:/run/secrets/wp_admin_password:ro \
-		-v $$(pwd)/secrets/wp_user_password.txt:/run/secrets/wp_user_password:ro \
 		--volume wordpress_data:/var/www/html \
 		wordpress:image
 

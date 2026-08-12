@@ -8,26 +8,22 @@ if [ ! -f /run/secrets/credentials.txt ]; then
     echo "[ERROR] credentials.txt is missing!" >&2
     exit 1
 fi
-if [ ! -f /run/secrets/db_password ]; then
-    echo "[ERROR] db_password secret is missing!" >&2
-    exit 1
-fi
-if [ ! -f /run/secrets/wp_admin_password ]; then
-    echo "[ERROR] wp_admin_password secret is missing!" >&2
-    exit 1
-fi
-if [ ! -f /run/secrets/wp_user_password ]; then
-    echo "[ERROR] wp_user_password secret is missing!" >&2
-    exit 1
-fi
 
 source /run/secrets/credentials.txt
-DB_PASSWORD=$(cat /run/secrets/db_password)
-WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
-WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
 
-if [ -z "$DB_HOST" ] || [ -z "$DB_NAME" ] || [ -z "$DB_USER" ] || [ -z "$WP_URL" ]; then
-    echo "[ERROR] One or more required variables are missing in credentials.txt!" >&2
+if [ -z "$DB_HOST" ]           || \
+   [ -z "$MYSQL_DATABASE" ]    || \
+   [ -z "$MYSQL_USER" ]        || \
+   [ -z "$DB_PASSWORD" ]       || \
+   [ -z "$WP_URL" ]            || \
+   [ -z "$WP_TITLE" ]          || \
+   [ -z "$WP_ADMIN_USER" ]     || \
+   [ -z "$WP_ADMIN_PASSWORD" ] || \
+   [ -z "$WP_ADMIN_EMAIL" ]    || \
+   [ -z "$WP_USER" ]           || \
+   [ -z "$WP_USER_PASSWORD" ]  || \
+   [ -z "$WP_USER_EMAIL" ]; then
+    echo "[ERROR] One or more required variables are missing!" >&2
     exit 1
 fi
 
@@ -43,7 +39,7 @@ fi
 echo "Waiting for MariaDB..."
 max_attempts=30
 counter=0
-until mariadb -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
+until mariadb -h"$DB_HOST" -u"$MYSQL_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
     counter=$((counter + 1))
     if [ "$counter" -ge "$max_attempts" ]; then
         echo "[ERROR] MariaDB failed to start or connection refused within $max_attempts seconds" >&2
@@ -51,14 +47,12 @@ until mariadb -h"$DB_HOST" -u"$DB_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/nu
     fi
     sleep 2
 done
-echo "MariaDB is ready."
 
 if [ ! -f "$WP_DIR/wp-config.php" ]; then
-    echo "Creating wp-config.php..."
     wp config create \
         --path="$WP_DIR" \
-        --dbname="$DB_NAME" \
-        --dbuser="$DB_USER" \
+        --dbname="$MYSQL_DATABASE" \
+        --dbuser="$MYSQL_USER" \
         --dbpass="$DB_PASSWORD" \
         --dbhost="$DB_HOST" \
         --allow-root
@@ -82,6 +76,5 @@ if ! wp core is-installed --path="$WP_DIR" --allow-root; then
         --allow-root
 fi
 
-echo "WordPress is ready."
 chown -R www-data:www-data /var/www/html
 exec php-fpm8.2 -F
