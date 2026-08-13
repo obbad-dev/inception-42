@@ -2,12 +2,12 @@
 
 set -e
 
-if [ -f /run/secrets/db_root_password ]; then
-    MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_password)
+if [ -f /run/secrets/db_root_passwd ]; then
+    MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_passwd)
 fi
 
-if [ -f /run/secrets/db_password ]; then
-    MYSQL_PASSWORD=$(cat /run/secrets/db_password)
+if [ -f /run/secrets/db_passwd ]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/db_passwd)
 fi
 
 if [ -z "$MYSQL_ROOT_PASSWORD" ] || [ -z "$MYSQL_DATABASE" ] || [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ]; then

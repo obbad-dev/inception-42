@@ -1,0 +1,67 @@
+networks:
+  inception-net:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/oualid/data/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/oualid/data/wordpress
+
+secrets:
+  db_passwd:
+    file: ../secrets/db_password.txt
+  db_root_passwd:
+    file: ../secrets/db_root_password.txt
+  wp_credentials:
+    file: ../secrets/credentials.txt
+
+services:
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    networks:
+      - inception-net
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env
+    secrets:
+      - db_passwd
+      - db_root_passwd
+    restart: on-failure
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    networks:
+      - inception-net
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - .env
+    secrets:
+      - wp_credentials
+    depends_on:
+      - mariadb
+    restart: on-failure
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    networks:
+      - inception-net
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+    restart: on-failure
+    

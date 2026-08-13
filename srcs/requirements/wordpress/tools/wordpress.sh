@@ -4,12 +4,12 @@ set -e
 
 WP_DIR="/var/www/html"
 
-if [ ! -f /run/secrets/credentials.txt ]; then
+if [ ! -f /run/secrets/wp_credentials ]; then
     echo "[ERROR] credentials.txt is missing!" >&2
     exit 1
 fi
 
-source /run/secrets/credentials.txt
+source /run/secrets/wp_credentials
 
 if [ -z "$DB_HOST" ]           || \
    [ -z "$MYSQL_DATABASE" ]    || \
