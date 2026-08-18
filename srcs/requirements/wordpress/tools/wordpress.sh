@@ -5,7 +5,7 @@ set -e
 WP_DIR="/var/www/html"
 
 if [ ! -f /run/secrets/wp_credentials ]; then
-    echo "[ERROR] credentials.txt is missing!" >&2
+    echo "[ERROR] wp_credentials is missing!" >&2
     exit 1
 fi
 
@@ -22,7 +22,8 @@ if [ -z "$DB_HOST" ]           || \
    [ -z "$WP_ADMIN_EMAIL" ]    || \
    [ -z "$WP_USER" ]           || \
    [ -z "$WP_USER_PASSWORD" ]  || \
-   [ -z "$WP_USER_EMAIL" ]; then
+   [ -z "$WP_USER_EMAIL" ]     || \
+   [ -z "$REDIS_HS" ]; then
     echo "[ERROR] One or more required variables are missing!" >&2
     exit 1
 fi
@@ -36,7 +37,6 @@ if [ ! -f "$WP_DIR/index.php" ]; then
     rm -rf /tmp/wordpress /tmp/wordpress.tar.gz
 fi
 
-echo "Waiting for MariaDB..."
 max_attempts=30
 counter=0
 until mariadb -h"$DB_HOST" -u"$MYSQL_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
@@ -76,5 +76,13 @@ if ! wp core is-installed --path="$WP_DIR" --allow-root; then
         --allow-root
 fi
 
+if [ ! -f "$WP_DIR/wp-content/object-cache.php" ]; then
+    wp config set WP_CACHE true --raw --allow-root --path="$WP_DIR"
+    wp config set WP_REDIS_HOST "$REDIS_HS" --allow-root --path="$WP_DIR"
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_DIR"
+    wp plugin install redis-cache --activate --allow-root --path="$WP_DIR" --force
+    wp redis enable --allow-root --path="$WP_DIR"
+fi
 chown -R www-data:www-data /var/www/html
+
 exec php-fpm8.2 -F

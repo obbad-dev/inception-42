@@ -1,5 +1,4 @@
-FROM debian:12
-
+FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y nginx openssl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \

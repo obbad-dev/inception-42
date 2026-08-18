@@ -13,13 +13,13 @@ RESET = \033[0m
 all: up
 
 up:
-	@echo "$(CYAN) _                    _   _                 $(RESET)"
+	@echo "$(CYAN) _                      _   _                 $(RESET)"
 	@echo "$(CYAN)(_)_ __   ___ ___ _ __ | |_(_) ___  _ __      $(RESET)"
 	@echo "$(CYAN)| | '_ \\ / __/ _ \\ '_ \\| __| |/ _ \\| '_ \\     $(RESET)"
 	@echo "$(CYAN)| | | | | (_|  __/ |_) | |_| | (_) | | | |    $(RESET)"
 	@echo "$(CYAN)|_|_| |_|\\___\\___| .__/ \\__|_|\\___/|_| |_|    $(RESET)"
 	@echo "$(CYAN)                 |_|                        $(RESET)"
-	@echo "$(CYAN)              _     _               _       $(RESET)"
+	@echo "$(CYAN)            _     _               _       $(RESET)"
 	@echo "$(CYAN)  ___  ___ | |__ | |__   __ _  __| |        $(RESET)"
 	@echo "$(CYAN) / _ \\/ _ \\| '_ \\| '_ \\ / _' |/ _' |        $(RESET)"
 	@echo "$(CYAN)| (_)| (_) | |_) | |_) | (_| | (_| |        $(RESET)"
@@ -30,6 +30,9 @@ up:
 
 stop:
 	@docker compose -f $(COMPOSE_FILE) stop
+
+start:
+	@docker compose -f $(COMPOSE_FILE) start
 
 down:
 	@docker compose -f $(COMPOSE_FILE) down
@@ -44,7 +47,7 @@ top:
 	@docker compose -f $(COMPOSE_FILE) top
 
 clean:
-	@docker compose -f $(COMPOSE_FILE) down -v --remove-orphans
+	@docker compose -f $(COMPOSE_FILE) down -v --rmi all
 
 fclean: clean
 	@docker system prune -a --volumes -f

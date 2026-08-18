@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y \
     php \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     php-xml \
     php-zip \
     php-opcache \
+    php-redis \
     curl \
     tar \
     mariadb-client \

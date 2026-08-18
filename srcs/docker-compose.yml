@@ -23,6 +23,8 @@ secrets:
     file: ../secrets/db_root_password.txt
   wp_credentials:
     file: ../secrets/credentials.txt
+  ftp_credentials:
+    file: ../secrets/ftp_credentials.txt
 
 services:
   mariadb:
@@ -38,6 +40,31 @@ services:
       - db_passwd
       - db_root_passwd
     restart: on-failure
+
+  redis:
+    container_name: redis
+    build:  ./requirements/bonus/redis
+    env_file:
+      - .env
+    networks:
+      - inception-net
+    restart: on-failure
+  ftp:
+    container_name: ftp
+    build: ./requirements/bonus/ftp
+    networks:
+      - inception-net
+    secrets:
+      - ftp_credentials
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "21:21"
+      - "6000-6010:6000-6010"
+    depends_on:
+      - wordpress
+    restart: on-failure
+
   wordpress:
     container_name: wordpress
     build: ./requirements/wordpress
@@ -51,6 +78,7 @@ services:
       - wp_credentials
     depends_on:
       - mariadb
+      - redis
     restart: on-failure
   nginx:
     container_name: nginx
