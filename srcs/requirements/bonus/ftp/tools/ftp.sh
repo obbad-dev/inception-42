@@ -19,7 +19,7 @@ if ! id "$FTP_USER" &>/dev/null; then
 fi
 
 until [ -f /var/www/html/wp-config.php ]; do
-    sleep 2
+    sleep 1
 done
 
 chown -R 33:33 /var/www/html

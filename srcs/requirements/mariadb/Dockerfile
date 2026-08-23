@@ -8,7 +8,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/mysql
 RUN mkdir -p /run/mysqld /var/lib/mysql && \
     chown -R mysql:mysql /run/mysqld /var/lib/mysql
-COPY tools/script.sh tools/
-RUN chmod +x tools/script.sh
-ENTRYPOINT [ "tools/script.sh" ]
+COPY tools/mariadb.sh tools/
+RUN chmod +x tools/mariadb.sh
+ENTRYPOINT [ "tools/mariadb.sh" ]
 CMD ["mariadbd", "--user=mysql", "--bind-address=0.0.0.0"]

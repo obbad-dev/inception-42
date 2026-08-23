@@ -59,7 +59,6 @@ if [ ! -f "$WP_DIR/wp-config.php" ]; then
 fi
 
 if ! wp core is-installed --path="$WP_DIR" --allow-root; then
-    echo "Installing WordPress..."
     wp core install \
         --path="$WP_DIR" \
         --url="$WP_URL" \
