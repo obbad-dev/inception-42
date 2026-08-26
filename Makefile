@@ -13,16 +13,29 @@ RESET  = \033[0m
 
 all: up
 
-up:
+build:
+	@echo "$(CYAN)Building containers...$(RESET)"
+	@docker compose -f $(COMPOSE_FILE) build > /dev/null &\
+	PID=$$!; \
+	frames="[🐳...........] [.🐳..........] [..🐳.........] [...🐳........] [....🐳.......] [.....🐳......] [......🐳.....] [.......🐳....] [........🐳...] [.........🐳..] [..........🐳.] [...........🐳] [🚀...........] [.🚀..........] [..🚀.........] [...🚀........] [....🚀.......] [.....🚀......] [......🚀.....] [.......🚀....] [........🚀...] [.........🚀..] [..........🚀.] [...........🚀]"; \
+	while kill -0 $$PID 2>/dev/null; do \
+		for f in $$frames; do \
+			if ! kill -0 $$PID 2>/dev/null; then break; fi; \
+			printf "\r$(YELLOW)%s $(RESET) " "$$f"; \
+			sleep 0.12; \
+		done; \
+	done;
+
+up: build
 	@echo "$(CYAN)Creating data directories...$(RESET)"
 	@mkdir -p $(WP_DATA)
 	@mkdir -p $(DB_DATA)
 	@echo "$(CYAN)Building and starting containers...$(RESET)"
-	@docker compose -f $(COMPOSE_FILE) up -d --build
+	@docker compose -f $(COMPOSE_FILE) up -d
 	@echo "$(YELLOW)Locking DNS to local dnsmasq container...$(RESET)"
 	@sudo chattr -i /etc/resolv.conf 2>/dev/null || true
 	@sudo rm -f /etc/resolv.conf
-	@echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf > /dev/null
+	@echo "nameserver 10.152.16.116" | sudo tee /etc/resolv.conf > /dev/null
 	@sudo chattr +i /etc/resolv.conf
 	@echo ""
 	@echo "$(GREEN) _                    _   _                 $(RESET)"

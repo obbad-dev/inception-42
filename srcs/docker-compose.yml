@@ -76,11 +76,12 @@ services:
   dns:
     container_name: dns
     build: ./requirements/bonus/dns
-    ports:
-      - "127.0.0.1:53:53/udp"
-      - "127.0.0.1:53:53/tcp"
-    networks:
-      - inception-net
+    network_mode: "host"
+    # ports:
+    #   - "10.152.16.116:53:53/udp"
+    #   - "10.152.16.116:53:53/tcp"
+    # networks:
+    #   - inception-net
     restart: on-failure
 
   wordpress:
