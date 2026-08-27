@@ -147,6 +147,8 @@ services:
     ports:
       - "127.0.0.1:53:53/udp"
       - "127.0.0.1:53:53/tcp"
+    env_file:
+      - .env
     restart: on-failure
 
   website:

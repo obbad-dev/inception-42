@@ -16,7 +16,10 @@ RESET  = \033[0m
 
 all: up
 
-build:
+setup:
+	@bash setup.sh
+
+build: setup
 	@echo "$(CYAN)Building containers...$(RESET)"
 	@$(COMPOSE_BUILD) > /dev/null &\
 	PID=$$!;\
@@ -89,4 +92,4 @@ restartResv:
 	@sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 	@sudo systemctl restart systemd-resolved
 	@echo "$(GREEN)Internet restored to normal.$(RESET)"
-.PHONY: all up stop start down status logs clean fclean re restartResv
+.PHONY: all setup up stop start down status logs clean fclean re restartResv
