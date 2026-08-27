@@ -268,7 +268,7 @@
           </div>
           <div class="concept-tab" data-tab="inception">
             <h4>📦 In This Project</h4>
-            <p><code>inception-net</code> (bridge driver) connects 6 containers. The DNS container uses <code>network_mode: host</code> instead, running directly on the host's network stack to intercept DNS queries on port 53.</p>
+            <p><code>inception-net</code> (bridge driver) connects 6 containers. The DNS container is isolated — it doesn't join <code>inception-net</code> and only binds port 53 to <code>127.0.0.1</code> on the host to intercept local DNS queries.</p>
           </div>
         </div>
         <div class="concept-tabs">
@@ -608,7 +608,7 @@ CMD ["/usr/local/bin/wordpress.sh"]</code></pre>
                   <li>Source secrets from <code>/run/secrets/wp_credentials</code></li>
                   <li>Validate all required variables are present</li>
                   <li>Download WordPress if <code>index.php</code> doesn't exist</li>
-                  <li>Wait for MariaDB to be ready (up to 30 attempts, 2s interval)</li>
+                  <li>MariaDB is guaranteed ready (Docker Compose <code>healthcheck</code> + <code>condition: service_healthy</code>)</li>
                   <li>Create <code>wp-config.php</code> via <code>wp config create</code></li>
                   <li>Install WordPress core with <code>wp core install</code></li>
                   <li>Create a second user with author role</li>
@@ -895,8 +895,7 @@ CMD ["vsftpd", "/etc/vsftpd.conf"]</code></pre>
             <div class="detail-group">
               <h4>Configuration</h4>
               <div class="detail-pills">
-                <span class="pill">Port: 53 (DNS)</span>
-                <span class="pill">network_mode: host</span>
+                <span class="pill">Port: 127.0.0.1:53 (DNS)</span>
                 <span class="pill">dnsmasq</span>
                 <span class="pill">⚠️ Not on inception-net</span>
               </div>
@@ -906,7 +905,7 @@ CMD ["vsftpd", "/etc/vsftpd.conf"]</code></pre>
               <div class="expand-content">
                 <pre><code class="language-conf">listen-address=0.0.0.0
 bind-interfaces
-address=/oobbad.42.fr/10.152.16.116
+address=/oobbad.42.fr/127.0.0.1
 server=8.8.8.8
 server=1.1.1.1</code></pre>
               </div>
@@ -999,9 +998,15 @@ server=1.1.1.1</code></pre>
     secrets:
       - db_passwd
       - db_root_passwd
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
     restart: on-failure</code></pre>
         <div class="compose-explanation">
           <p><code>build</code> points to the directory containing the Dockerfile. <code>container_name</code> sets a fixed name (also used as DNS hostname). <code>env_file</code> loads environment variables from <code>.env</code>. <code>restart: on-failure</code> restarts the container if it crashes (but not if stopped manually).</p>
+          <p>The <code>healthcheck</code> runs <code>mariadb-admin ping</code> every 2 seconds. Other services use <code>depends_on: condition: service_healthy</code> to wait until MariaDB is actually accepting connections — not just until the container starts.</p>
           <p>No <code>depends_on</code> — MariaDB is the foundation that other services wait for.</p>
         </div>
       </div>
@@ -1020,11 +1025,19 @@ server=1.1.1.1</code></pre>
     secrets:
       - wp_credentials
     depends_on:
-      - mariadb
-      - redis
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "test", "-f", "/var/www/html/wp-config.php"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
     restart: on-failure</code></pre>
         <div class="compose-explanation">
-          <p><code>depends_on</code> ensures MariaDB and Redis containers are <strong>started before</strong> WordPress. Note: this only controls startup order, not readiness. That's why <code>wordpress.sh</code> includes its own wait loop that polls MariaDB until it responds.</p>
+          <p><code>depends_on</code> with <code>condition: service_healthy</code> ensures MariaDB's <code>healthcheck</code> passes before WordPress starts. This eliminates the need for a polling loop inside <code>wordpress.sh</code> — Docker Compose handles the orchestration natively.</p>
+          <p>WordPress itself has a <code>healthcheck</code> that checks for <code>wp-config.php</code>. Services like FTP and Nginx use <code>condition: service_healthy</code> on WordPress to guarantee it's fully installed before they start.</p>
           <p>The <code>wordpress_data</code> volume at <code>/var/www/html</code> is shared with Nginx (for serving static files) and FTP (for file uploads).</p>
         </div>
       </div>
@@ -1041,26 +1054,32 @@ server=1.1.1.1</code></pre>
     ports:
       - "443:443"
     depends_on:
-      - wordpress
-      - adminer
-      - dns
+      wordpress:
+        condition: service_healthy
+      adminer:
+        condition: service_started
+      website:
+        condition: service_started
     restart: on-failure</code></pre>
         <div class="compose-explanation">
           <p><code>ports: "443:443"</code> maps host port 443 to container port 443 — this is the only publicly accessible port for the main website. Nginx is the last service to start because it depends on everything it proxies to.</p>
+          <p><code>depends_on</code> uses <code>condition: service_healthy</code> on WordPress to guarantee WordPress is fully installed (wp-config.php exists) before Nginx tries to proxy to it. Adminer and website only need <code>service_started</code>.</p>
           <p>It mounts <code>wordpress_data</code> to serve static assets directly without going through PHP-FPM (the <code>try_files</code> directive checks the filesystem first).</p>
         </div>
       </div>
 
       <div class="compose-block fade-in">
-        <h3>Services — DNS (Host Network)</h3>
+        <h3>Services — DNS (Isolated)</h3>
         <pre><code class="language-yaml">  dns:
     container_name: dns
     build: ./requirements/bonus/dns
-    network_mode: "host"
+    ports:
+      - "127.0.0.1:53:53/udp"
+      - "127.0.0.1:53:53/tcp"
     restart: on-failure</code></pre>
         <div class="compose-explanation">
-          <p><code>network_mode: "host"</code> is unique — this container doesn't join <code>inception-net</code>. Instead, it shares the host's network stack directly. This allows dnsmasq to listen on port 53 on the host's actual IP address, intercepting DNS queries before they leave the machine.</p>
-          <p>This is necessary because the Makefile configures the host's <code>/etc/resolv.conf</code> to point to this container's DNS service.</p>
+          <p>DNS is not on <code>inception-net</code> — it doesn't need to communicate with any other container. It only serves the <strong>host machine</strong> so that <code>oobbad.42.fr</code> resolves to <code>127.0.0.1</code>.</p>
+          <p>Ports are bound to <code>127.0.0.1</code> only, keeping DNS strictly local. The Makefile configures <code>/etc/resolv.conf</code> to point to this container.</p>
         </div>
       </div>
     </div>
@@ -1102,7 +1121,7 @@ server=1.1.1.1</code></pre>
         </div>
         <div class="net-explain-card">
           <h3>Host Network: DNS Container</h3>
-          <p>The DNS container uses <code>network_mode: "host"</code>, which means it skips network isolation entirely and directly uses the host's network interfaces. This is necessary so dnsmasq can bind to the host's IP address (10.152.16.116) on port 53 and intercept all DNS queries.</p>
+          <p>The DNS container is not on <code>inception-net</code>. It binds port 53 to <code>127.0.0.1</code> only, so dnsmasq can intercept all DNS queries from the host machine. It resolves <code>oobbad.42.fr</code> to <code>127.0.0.1</code> (localhost) and forwards all other queries to Google (8.8.8.8) and Cloudflare (1.1.1.1).</p>
         </div>
         <div class="net-explain-card">
           <h3>Port Mapping</h3>
@@ -1201,9 +1220,9 @@ server=1.1.1.1</code></pre>
           <div class="flow-step-marker" style="--step-color: #06b6d4">2</div>
           <div class="flow-step-content">
             <h4>🔍 DNS Resolution</h4>
-            <p>The OS checks <code>/etc/resolv.conf</code>, which points to <code>10.152.16.116</code> (the dnsmasq container). Dnsmasq matches <code>oobbad.42.fr</code> against its <code>address=</code> rule and returns the host IP. No external DNS query needed.</p>
+            <p>The OS checks <code>/etc/resolv.conf</code>, which points to <code>127.0.0.1</code> (the dnsmasq container). Dnsmasq matches <code>oobbad.42.fr</code> against its <code>address=</code> rule and returns <code>127.0.0.1</code>. No external DNS query needed.</p>
             <div class="flow-detail">
-              <code>address=/oobbad.42.fr/10.152.16.116</code>
+              <code>address=/oobbad.42.fr/127.0.0.1</code>
             </div>
           </div>
         </div>
@@ -1423,34 +1442,35 @@ fi</code></pre>
           </div>
 
           <div class="code-group">
-            <pre><code>until mariadb -h"$DB_HOST" -u"$MYSQL_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
-    counter=$((counter + 1))
-    if [ "$counter" -ge "$max_attempts" ]; then
-        echo "[ERROR] MariaDB failed to start" >&2
-        exit 1
-    fi
-    sleep 2
-done</code></pre>
+            <pre><code># No MariaDB wait loop needed!
+# docker-compose.yml handles this:
+#   depends_on:
+#     mariadb:
+#       condition: service_healthy</code></pre>
             <div class="code-explanation">
-              <p>Waits for MariaDB to be <strong>fully ready</strong>, not just started. The <code>until</code> loop runs <code>SELECT 1</code> against MariaDB every 2 seconds for up to 30 attempts (60 seconds). This is necessary because <code>depends_on</code> in docker-compose only ensures the container has started — not that the database server is accepting connections.</p>
+              <p>Unlike many Docker setups that use an <code>until</code> polling loop to wait for the database, this project uses Docker Compose <strong>healthchecks</strong>. MariaDB has a <code>healthcheck</code> that runs <code>mariadb-admin ping</code>, and WordPress uses <code>depends_on: condition: service_healthy</code>. Docker Compose won't start WordPress until MariaDB's healthcheck passes — making the wait loop unnecessary and the script cleaner.</p>
             </div>
           </div>
 
           <div class="code-group">
-            <pre><code>wp config create --path="$WP_DIR" \
-    --dbname="$MYSQL_DATABASE" --dbuser="$MYSQL_USER" \
-    --dbpass="$DB_PASSWORD" --dbhost="$DB_HOST" --allow-root
+            <pre><code>if [ ! -f "$WP_DIR/wp-config.php" ]; then
+    wp config create --path="$WP_DIR" \
+        --dbname="$MYSQL_DATABASE" --dbuser="$MYSQL_USER" \
+        --dbpass="$DB_PASSWORD" --dbhost="$DB_HOST" --allow-root
+fi
 
-wp core install --path="$WP_DIR" --url="$WP_URL" \
-    --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" \
-    --admin_password="$WP_ADMIN_PASSWORD" \
-    --admin_email="$WP_ADMIN_EMAIL" --allow-root
+if ! wp core is-installed --path="$WP_DIR" --allow-root; then
+    wp core install --path="$WP_DIR" --url="$WP_URL" \
+        --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" \
+        --admin_password="$WP_ADMIN_PASSWORD" \
+        --admin_email="$WP_ADMIN_EMAIL" --allow-root
 
-wp user create "$WP_USER" "$WP_USER_EMAIL" \
-    --user_pass="$WP_USER_PASSWORD" --role=author \
-    --path="$WP_DIR" --allow-root</code></pre>
+    wp user create "$WP_USER" "$WP_USER_EMAIL" \
+        --user_pass="$WP_USER_PASSWORD" --role=author \
+        --path="$WP_DIR" --allow-root
+fi</code></pre>
             <div class="code-explanation">
-              <p><code>wp config create</code> generates <code>wp-config.php</code> with database connection details. <code>wp core install</code> runs the WordPress installation wizard (creates tables, sets admin user). <code>wp user create</code> creates a second user with <strong>author</strong> role. <code>--allow-root</code> is needed because the script runs as root inside the container.</p>
+              <p>Each step is guarded by an <code>if</code> check to make the script <strong>idempotent</strong> — safe to run multiple times without duplicating work. <code>wp config create</code> only runs if <code>wp-config.php</code> doesn't exist. <code>wp core install</code> only runs if WordPress isn't already installed (checked by <code>wp core is-installed</code>). The second user is created inside the same block since it's part of the initial install. <code>--allow-root</code> is needed because the script runs as root inside the container.</p>
             </div>
           </div>
 
@@ -1482,14 +1502,24 @@ exec php-fpm8.2 -F</code></pre>
           <span class="script-type">ENTRYPOINT script</span>
         </div>
         <div class="script-description">
-          <p>This script initializes the vsftpd FTP server. It creates an FTP user from secrets, waits for WordPress to be installed, configures vsftpd for local user access with passive mode, and starts the server.</p>
+          <p>This script initializes the vsftpd FTP server. It creates an FTP user from secrets, sets file permissions, configures vsftpd for local user access with passive mode, and starts the server. WordPress is guaranteed ready via <code>depends_on: condition: service_healthy</code>.</p>
         </div>
         <div class="script-code-explained">
 
           <div class="code-group">
             <pre><code>#!/bin/bash
 
+if [ ! -f /run/secrets/ftp_credentials ]; then
+    echo "[ERROR] ftp_credentials is missing!" >&2
+    exit 1
+fi
+
 source /run/secrets/ftp_credentials
+
+if [ -z "$FTP_USER" ] || [ -z "$FTP_PWD" ]; then
+    echo "[ERROR] One or more required variables are missing!" >&2
+    exit 1
+fi
 
 if ! id "$FTP_USER" &>/dev/null; then
     adduser "$FTP_USER" --disabled-password --gecos ""
@@ -1497,19 +1527,15 @@ if ! id "$FTP_USER" &>/dev/null; then
     usermod -aG 33 "$FTP_USER"
 fi</code></pre>
             <div class="code-explanation">
-              <p>Sources FTP credentials (FTP_USER, FTP_PWD) from secrets. Creates the FTP user only if it doesn't already exist (<code>id</code> returns non-zero for non-existent users). <code>--disabled-password</code> prevents login via password (SSH), while <code>chpasswd</code> sets the FTP password. <code>usermod -aG 33</code> adds the user to group 33 (<code>www-data</code>), enabling proper file permissions.</p>
+              <p>First validates that the secrets file exists and all required variables are set — failing fast with clear error messages if anything is missing. Then creates the FTP user only if it doesn't already exist (<code>id</code> returns non-zero for non-existent users). <code>--disabled-password</code> prevents login via password (SSH), while <code>chpasswd</code> sets the FTP password. <code>usermod -aG 33</code> adds the user to group 33 (<code>www-data</code>), enabling proper file permissions.</p>
             </div>
           </div>
 
           <div class="code-group">
-            <pre><code>until [ -f /var/www/html/wp-config.php ]; do
-    sleep 1
-done
-
-chown -R 33:33 /var/www/html
+            <pre><code>chown -R 33:33 /var/www/html
 chmod -R g+w /var/www/html</code></pre>
             <div class="code-explanation">
-              <p>Waits until WordPress is fully installed (indicated by <code>wp-config.php</code> existing). Then sets ownership to UID/GID 33 (<code>www-data</code>) and adds group write permissions. This ensures both PHP-FPM and the FTP user can read and write WordPress files.</p>
+              <p>Sets ownership to UID/GID 33 (<code>www-data</code>) and adds group write permissions. No wait loop is needed — Docker Compose's <code>depends_on: wordpress: condition: service_healthy</code> guarantees WordPress is fully installed (wp-config.php exists) before the FTP container starts. This ensures both PHP-FPM and the FTP user can read and write WordPress files.</p>
             </div>
           </div>
 
@@ -1616,7 +1642,7 @@ exec "$@"</code></pre>
             <strong>What it isolates:</strong> Network interfaces, IP addresses, routing tables, port numbers, and firewall rules. Each container gets its own network stack with its own <code>eth0</code>, its own IP address, and its own set of ports.
           </div>
           <div class="ns-docker">
-            <strong>In Docker:</strong> Both WordPress and Adminer listen on different ports (9000 and 8080) on their own network interfaces. Docker connects them to the <code>inception-net</code> bridge via virtual Ethernet pairs. The DNS container bypasses this with <code>network_mode: host</code>.
+            <strong>In Docker:</strong> Both WordPress and Adminer listen on different ports (9000 and 8080) on their own network interfaces. Docker connects them to the <code>inception-net</code> bridge via virtual Ethernet pairs. The DNS container is isolated from the bridge — it only binds to <code>127.0.0.1:53</code> on the host.
           </div>
         </div>
 

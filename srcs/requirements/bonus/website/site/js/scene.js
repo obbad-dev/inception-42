@@ -120,13 +120,13 @@ protected-mode no</code></pre></div>
     'dns': {
         title: "DNS - Local Domain Resolver",
         body: `
-<div class='info-section'><h4>Purpose</h4><p>Runs dnsmasq to resolve oobbad.42.fr to the host machine's IP (10.152.16.116). Enables the .42.fr domain to work locally without modifying /etc/hosts.</p></div>
+<div class='info-section'><h4>Purpose</h4><p>Runs dnsmasq to resolve oobbad.42.fr to 127.0.0.1 (localhost). Enables the .42.fr domain to work locally without modifying /etc/hosts.</p></div>
 <div class='info-section'><h4>Image</h4><p>debian:bookworm-slim + dnsmasq</p></div>
-<div class='info-section'><h4>Port</h4><p><span class='port-badge'>53</span> (DNS, UDP+TCP)</p></div>
-<div class='info-section'><h4>Network</h4><p><strong>host</strong> (not inception-net!) — uses the host's network stack directly</p></div>
+<div class='info-section'><h4>Port</h4><p><span class='port-badge'>53</span> (DNS, UDP+TCP) — bound to 127.0.0.1 only</p></div>
+<div class='info-section'><h4>Network</h4><p><strong>Isolated</strong> — not on inception-net. Binds port 53 to localhost on the host.</p></div>
 <div class='info-section'><h4>Configuration</h4><pre><code>listen-address=0.0.0.0
 bind-interfaces
-address=/oobbad.42.fr/10.152.16.116
+address=/oobbad.42.fr/127.0.0.1
 server=8.8.8.8
 server=1.1.1.1</code></pre></div>
 <div class='info-section'><h4>How it works</h4><p>The Makefile locks /etc/resolv.conf to point to this container. All DNS queries go through dnsmasq. Queries for oobbad.42.fr resolve locally; all other queries are forwarded to Google (8.8.8.8) and Cloudflare (1.1.1.1).</p></div>

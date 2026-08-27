@@ -115,6 +115,8 @@ services:
       - inception-net
     secrets:
       - ftp_credentials
+    env_file:
+      - .env
     volumes:
       - wordpress_data:/var/www/html
     ports:
