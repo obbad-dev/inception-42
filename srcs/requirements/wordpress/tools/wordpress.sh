@@ -37,17 +37,6 @@ if [ ! -f "$WP_DIR/index.php" ]; then
     rm -rf /tmp/wordpress /tmp/wordpress.tar.gz
 fi
 
-max_attempts=30
-counter=0
-until mariadb -h"$DB_HOST" -u"$MYSQL_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
-    counter=$((counter + 1))
-    if [ "$counter" -ge "$max_attempts" ]; then
-        echo "[ERROR] MariaDB failed to start or connection refused within $max_attempts seconds" >&2
-        exit 1
-    fi
-    sleep 2
-done
-
 if [ ! -f "$WP_DIR/wp-config.php" ]; then
     wp config create \
         --path="$WP_DIR" \

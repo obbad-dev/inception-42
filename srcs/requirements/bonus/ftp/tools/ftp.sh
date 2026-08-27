@@ -18,10 +18,6 @@ if ! id "$FTP_USER" &>/dev/null; then
     usermod -aG 33 "$FTP_USER"
 fi
 
-until [ -f /var/www/html/wp-config.php ]; do
-    sleep 1
-done
-
 chown -R 33:33 /var/www/html
 chmod -R g+w /var/www/html
 

@@ -38,7 +38,7 @@ up: build
 	@echo "$(YELLOW)Locking DNS to local dnsmasq container...$(RESET)"
 	@sudo chattr -i /etc/resolv.conf 2>/dev/null || true
 	@sudo rm -f /etc/resolv.conf
-	@echo "nameserver 10.152.16.116" | sudo tee /etc/resolv.conf > /dev/null
+	@echo "nameserver 127.0.0.1" | sudo tee /etc/resolv.conf > /dev/null
 	@sudo chattr +i /etc/resolv.conf
 	@echo ""
 	@echo "$(GREEN) _                      _   _                 $(RESET)"

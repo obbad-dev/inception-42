@@ -9,6 +9,7 @@ volumes:
       type: none
       o: bind
       device: /home/${LOGIN}/data/mariadb
+
   wordpress_data:
     driver: local
     driver_opts:
@@ -19,14 +20,18 @@ volumes:
 secrets:
   db_passwd:
     file: ../secrets/db_password.txt
+
   db_root_passwd:
     file: ../secrets/db_root_password.txt
+
   wp_credentials:
     file: ../secrets/wp_credentials.txt
+
   ftp_credentials:
     file: ../secrets/ftp_credentials.txt
 
 services:
+
   mariadb:
     container_name: mariadb
     build: ./requirements/mariadb
@@ -39,49 +44,13 @@ services:
     secrets:
       - db_passwd
       - db_root_passwd
-    restart: on-failure
 
-  redis:
-    container_name: redis
-    build:  ./requirements/bonus/redis
-    env_file:
-      - .env
-    networks:
-      - inception-net
-    restart: on-failure
-  ftp:
-    container_name: ftp
-    build: ./requirements/bonus/ftp
-    networks:
-      - inception-net
-    secrets:
-      - ftp_credentials
-    volumes:
-      - wordpress_data:/var/www/html
-    ports:
-      - "21:21"
-      - "6000-6010:6000-6010"
-    depends_on:
-      - wordpress
-    restart: on-failure
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
 
-  adminer:
-    container_name: adminer
-    build: ./requirements/bonus/adminer
-    networks:
-      - inception-net
-    depends_on:
-      - mariadb
-    restart: on-failure
-  dns:
-    container_name: dns
-    build: ./requirements/bonus/dns
-    network_mode: "host"
-    # ports:
-    #   - "10.152.16.116:53:53/udp"
-    #   - "10.152.16.116:53:53/tcp"
-    # networks:
-    #   - inception-net
     restart: on-failure
 
   wordpress:
@@ -95,10 +64,21 @@ services:
       - .env
     secrets:
       - wp_credentials
+
     depends_on:
-      - mariadb
-      - redis
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    healthcheck:
+      test: ["CMD", "test", "-f", "/var/www/html/wp-config.php"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
     restart: on-failure
+
   nginx:
     container_name: nginx
     build: ./requirements/nginx
@@ -108,8 +88,68 @@ services:
       - wordpress_data:/var/www/html
     ports:
       - "443:443"
+
     depends_on:
-      - wordpress
-      - adminer
-      - dns
+      wordpress:
+        condition: service_healthy
+      adminer:
+        condition: service_started
+      website:
+        condition: service_started
+
+    restart: on-failure
+
+  redis:
+    container_name: redis
+    build: ./requirements/bonus/redis
+    env_file:
+      - .env
+    networks:
+      - inception-net
+    restart: on-failure
+
+  ftp:
+    container_name: ftp
+    build: ./requirements/bonus/ftp
+    networks:
+      - inception-net
+    secrets:
+      - ftp_credentials
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "21:21"
+      - "6000-6010:6000-6010"
+
+    depends_on:
+      wordpress:
+        condition: service_healthy
+
+    restart: on-failure
+
+  adminer:
+    container_name: adminer
+    build: ./requirements/bonus/adminer
+    networks:
+      - inception-net
+
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+    restart: on-failure
+
+  dns:
+    container_name: dns
+    build: ./requirements/bonus/dns
+    ports:
+      - "127.0.0.1:53:53/udp"
+      - "127.0.0.1:53:53/tcp"
+    restart: on-failure
+
+  website:
+    container_name: website
+    build: ./requirements/bonus/website
+    networks:
+      - inception-net
     restart: on-failure

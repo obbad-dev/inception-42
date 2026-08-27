@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inception — Interactive Docker Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ========== NAVIGATION ========== -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo">
+        <span class="logo-icon">⬡</span> INCEPTION
+      </a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#architecture" class="nav-link">Architecture</a>
+        <a href="#docker-fundamentals" class="nav-link">Docker</a>
+        <a href="#containers" class="nav-link">Containers</a>
+        <a href="#compose" class="nav-link">Compose</a>
+        <a href="#networking" class="nav-link">Networking</a>
+        <a href="#storage" class="nav-link">Storage</a>
+        <a href="#request-flow" class="nav-link">Request Flow</a>
+        <a href="#scripts" class="nav-link">Scripts</a>
+        <a href="#internals" class="nav-link">Internals</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== HERO ========== -->
+  <section id="hero" class="section hero-section">
+    <div class="hero-content">
+      <div class="hero-badge">42 Project</div>
+      <h1 class="hero-title">
+        <span class="hero-title-line">Inception</span>
+        <span class="hero-subtitle">Interactive Docker Architecture Explorer</span>
+      </h1>
+      <p class="hero-description">
+        A complete interactive guide to understanding Docker infrastructure through a real-world project.
+        Explore 3D architecture, learn Docker fundamentals, and discover how Linux containers really work.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">7</span>
+          <span class="stat-label">Containers</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">1</span>
+          <span class="stat-label">Network</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">2</span>
+          <span class="stat-label">Volumes</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">4</span>
+          <span class="stat-label">Secrets</span>
+        </div>
+      </div>
+      <a href="#architecture" class="hero-cta">
+        Explore Architecture
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17l9.2-9.2M17 17V7H7"/></svg>
+      </a>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll to explore</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ========== ARCHITECTURE (3D) ========== -->
+  <section id="architecture" class="section">
+    <div class="section-header">
+      <span class="section-tag">Interactive 3D</span>
+      <h2>Project Architecture</h2>
+      <p>Click on any container to inspect it. Drag to rotate, scroll to zoom, right-click to pan.</p>
+    </div>
+    <div class="architecture-wrapper">
+      <div id="three-container"></div>
+      <div class="architecture-controls">
+        <button id="animate-flow-btn" class="control-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Animate Flow
+        </button>
+        <button id="reset-camera-btn" class="control-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reset View
+        </button>
+      </div>
+      <div id="info-panel" class="info-panel">
+        <div class="info-panel-header">
+          <h3 class="info-title">Container Name</h3>
+          <button class="info-close" aria-label="Close panel">&times;</button>
+        </div>
+        <div class="info-body"></div>
+      </div>
+    </div>
+    <div class="architecture-legend">
+      <h4>Legend</h4>
+      <div class="legend-items">
+        <div class="legend-item"><span class="legend-color" style="background:#3b82f6"></span> Nginx</div>
+        <div class="legend-item"><span class="legend-color" style="background:#22c55e"></span> WordPress</div>
+        <div class="legend-item"><span class="legend-color" style="background:#f97316"></span> MariaDB</div>
+        <div class="legend-item"><span class="legend-color" style="background:#ef4444"></span> Redis</div>
+        <div class="legend-item"><span class="legend-color" style="background:#a855f7"></span> Adminer</div>
+        <div class="legend-item"><span class="legend-color" style="background:#eab308"></span> FTP</div>
+        <div class="legend-item"><span class="legend-color" style="background:#06b6d4"></span> DNS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== DOCKER FUNDAMENTALS ========== -->
+  <section id="docker-fundamentals" class="section">
+    <div class="section-header">
+      <span class="section-tag">Learn</span>
+      <h2>Docker Fundamentals</h2>
+      <p>Master Docker concepts from the ground up — with real analogies and connections to this project.</p>
+    </div>
+
+    <div class="concepts-grid">
+
+      <!-- What is Docker -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🐳</div>
+        <h3 class="concept-title">What is Docker?</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Imagine you're shipping goods internationally. Instead of worrying about how each item is stored differently on each truck, ship, and train — you put everything in a <strong>standardized container</strong>. The container is the same everywhere, so any transport system can handle it.</p>
+            <p>Docker does the same for software. Your application goes into a container that runs identically on any machine.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Docker is a platform that uses <strong>Linux kernel features</strong> (namespaces, cgroups, union filesystems) to create isolated environments called containers. Unlike virtual machines, containers share the host's kernel, making them lightweight and fast.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>This Inception project uses Docker to run <strong>7 isolated services</strong>: Nginx, WordPress, MariaDB, Redis, Adminer, FTP, and DNS — all on a single machine, each in its own container, communicating over a virtual network.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Container -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">📦</div>
+        <h3 class="concept-title">Container</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>A container is like a <strong>private workspace</strong> in an office building. You have your own desk, your own supplies, your own phone line. You can't see or interfere with other people's workspaces, even though you share the same building (the host OS kernel).</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>A container is a <strong>running instance of an image</strong>. It's an isolated process (or group of processes) with its own filesystem, network, and process tree — created using Linux namespaces and cgroups. It shares the host kernel but has its own userspace.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>Each service runs in its own container: <code>nginx</code>, <code>wordpress</code>, <code>mariadb</code>, <code>redis</code>, <code>adminer</code>, <code>ftp</code>, and <code>dns</code>. Each container has its own filesystem, network interfaces, and runs independently.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Image -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">💿</div>
+        <h3 class="concept-title">Image</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>If a container is a running workspace, then an image is the <strong>blueprint</strong> used to build that workspace. It specifies what desk, what supplies, what software — everything needed. You can create many identical workspaces from the same blueprint.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>A Docker image is a <strong>read-only template</strong> composed of layered filesystems. Each layer represents a Dockerfile instruction. Images are stored and shared via registries. When you run an image, Docker adds a writable layer on top, creating a container.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>All containers are built from <code>debian:bookworm-slim</code> as the base image. Each Dockerfile adds specific packages on top: nginx, PHP-FPM, MariaDB server, Redis, vsftpd, dnsmasq, etc.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Dockerfile -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">📝</div>
+        <h3 class="concept-title">Dockerfile</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>A Dockerfile is like a <strong>recipe card</strong>. It lists step-by-step instructions: "Start with Debian, add Nginx, copy this config file, expose port 443, run this command." Anyone with this recipe can reproduce the exact same result.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>A text file with instructions (<code>FROM</code>, <code>RUN</code>, <code>COPY</code>, <code>EXPOSE</code>, <code>CMD</code>, <code>ENTRYPOINT</code>) that Docker executes sequentially to build an image. Each instruction creates a new layer in the image's union filesystem.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>This project has <strong>7 Dockerfiles</strong>, one per service. For example, the Nginx Dockerfile installs nginx and openssl, generates a self-signed TLS certificate, and copies the server configuration.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Docker Compose -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🎼</div>
+        <h3 class="concept-title">Docker Compose</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Docker Compose is like an <strong>orchestra conductor's score</strong>. Instead of starting each musician individually, the conductor reads the score and coordinates the whole orchestra — which instruments play, when they start, how they interact.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>A YAML file (<code>docker-compose.yml</code>) that defines multi-container applications. It specifies services, networks, volumes, secrets, environment variables, dependencies, and build contexts. <code>docker compose up</code> starts everything in the right order.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>The <code>docker-compose.yml</code> defines all 7 services, the <code>inception-net</code> bridge network, 2 named volumes, 4 Docker secrets, and specifies dependencies (e.g., WordPress depends on MariaDB and Redis).</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Networks -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🌐</div>
+        <h3 class="concept-title">Networks</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Docker networks are like <strong>private intercom systems</strong> in a building. Containers on the same network can call each other by name. Containers on different networks can't hear each other at all.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Docker creates virtual networks using Linux network namespaces and virtual Ethernet pairs (veth). A bridge network connects containers through a software bridge. Docker provides built-in DNS so containers can resolve each other's names.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p><code>inception-net</code> (bridge driver) connects 6 containers. The DNS container uses <code>network_mode: host</code> instead, running directly on the host's network stack to intercept DNS queries on port 53.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Volumes -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">💾</div>
+        <h3 class="concept-title">Volumes</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Containers are ephemeral — like writing on a whiteboard. When you erase it (destroy the container), everything is gone. A volume is like a <strong>filing cabinet</strong> next to the whiteboard. You store important documents there, and they persist even if the whiteboard is wiped clean.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Docker volumes are managed storage areas that exist outside a container's writable layer. They persist when containers are removed. They can be shared between containers. Docker supports named volumes, anonymous volumes, and bind mounts.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p><code>mariadb_data</code> persists the database at <code>/var/lib/mysql</code>. <code>wordpress_data</code> persists WordPress files at <code>/var/www/html</code>. Both use bind mounts to <code>/home/oualid/data/</code> on the host.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Ports -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🚪</div>
+        <h3 class="concept-title">Ports</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Ports are like <strong>doors</strong> in a building. Each container has its own doors numbered differently. Port mapping connects an outside door (host port) to an inside door (container port). Visitors enter through the host door and arrive at the right container room.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Port mapping uses iptables rules to forward traffic from a host port to a container port. <code>-p 443:443</code> maps host port 443 to container port 443. Internal ports (like 9000) are accessible only to containers on the same network.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>Nginx exposes <code>443:443</code> (HTTPS). FTP exposes <code>21:21</code> + <code>6000-6010:6000-6010</code>. WordPress (:9000), MariaDB (:3306), Redis (:6379), and Adminer (:8080) are <strong>internal only</strong>.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Environment Variables -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">⚙️</div>
+        <h3 class="concept-title">Environment Variables</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Environment variables are like <strong>sticky notes</strong> on your desk with important settings: "Database host is mariadb", "Domain is oobbad.42.fr". The application reads these notes instead of hardcoding values.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Key-value pairs injected into a container's environment at runtime. Defined via <code>env_file</code>, <code>environment</code>, or <code>.env</code>. Accessible as <code>$VARIABLE_NAME</code> in scripts. Used for configuration that changes between deployments.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>The <code>.env</code> file sets: <code>DOMAIN_NAME=oobbad.42.fr</code>, <code>MYSQL_DATABASE=inception_db</code>, <code>DB_HOST=mariadb</code>, <code>REDIS_HS=redis</code>, and more. Used by MariaDB, WordPress, and Redis containers.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Docker Secrets -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🔐</div>
+        <h3 class="concept-title">Docker Secrets</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>While environment variables are like sticky notes visible on your desk, secrets are like documents in a <strong>locked safe</strong>. Only authorized containers can open the safe and read the documents. They're never visible in logs or environment listings.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Docker secrets are encrypted at rest and mounted as files in <code>/run/secrets/</code> inside containers. They're defined in <code>docker-compose.yml</code> and stored in files on the host. Only services with explicit access can read them.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>4 secrets are used: <code>db_passwd</code> and <code>db_root_passwd</code> for MariaDB, <code>wp_credentials</code> for WordPress admin/user passwords, and <code>ftp_credentials</code> for the FTP user. Scripts read them with <code>cat /run/secrets/...</code> or <code>source</code>.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Container Lifecycle -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🔄</div>
+        <h3 class="concept-title">Container Lifecycle</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>A container's lifecycle is like a <strong>rented office space</strong>: you create it (sign the lease), start it (move in and work), stop it (lock up for the night), and remove it (end the lease). The space can be restarted anytime, and your filing cabinet (volume) survives even if you leave.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>States: <strong>Created → Running → Paused → Stopped → Removed</strong>. The main process (PID 1) determines the container's life — when it exits, the container stops. <code>restart: on-failure</code> automatically restarts crashed containers.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>All containers use <code>restart: on-failure</code>. The Makefile manages the lifecycle: <code>make up</code> builds and starts, <code>make stop</code> pauses, <code>make down</code> removes containers, <code>make fclean</code> removes everything including volumes and images.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Image Layers -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">🧱</div>
+        <h3 class="concept-title">Image Layers</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Image layers are like <strong>transparent sheets stacked on top of each other</strong>. The bottom sheet is the base OS. Each new sheet adds something: one adds Nginx, another copies a config file. When viewed together, they form a complete picture.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Each Dockerfile instruction creates a read-only layer. Layers are cached and shared between images. If two images both <code>FROM debian:bookworm-slim</code>, they share that base layer. A union filesystem (OverlayFS) merges all layers into a single view.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>All 7 services share the <code>debian:bookworm-slim</code> base layer, saving disk space. Each Dockerfile's <code>RUN</code>, <code>COPY</code>, and <code>WORKDIR</code> instructions add new layers on top of that shared base.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+      <!-- Service-to-Service Communication -->
+      <div class="concept-card fade-in">
+        <div class="concept-icon">📡</div>
+        <h3 class="concept-title">Service Communication</h3>
+        <div class="concept-body">
+          <div class="concept-tab active" data-tab="analogy">
+            <h4>💡 Analogy</h4>
+            <p>Containers on the same Docker network can call each other by name, like coworkers in the same office using an <strong>internal phone directory</strong>. You dial "mariadb" and you reach the MariaDB container, no IP address needed.</p>
+          </div>
+          <div class="concept-tab" data-tab="technical">
+            <h4>🔧 Technical</h4>
+            <p>Docker's embedded DNS server (at 127.0.0.11) resolves container names to their IP addresses within a user-defined network. This enables service discovery without hardcoded IPs. Containers communicate via TCP/UDP on their exposed internal ports.</p>
+          </div>
+          <div class="concept-tab" data-tab="inception">
+            <h4>📦 In This Project</h4>
+            <p>Nginx connects to <code>wordpress:9000</code> and <code>adminer:8080</code> via FastCGI. WordPress connects to <code>mariadb</code> for database and <code>redis</code> for caching — all by container name, resolved by Docker DNS on the <code>inception-net</code> network.</p>
+          </div>
+        </div>
+        <div class="concept-tabs">
+          <button class="tab-btn active" data-target="analogy">Analogy</button>
+          <button class="tab-btn" data-target="technical">Technical</button>
+          <button class="tab-btn" data-target="inception">In Project</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== MY CONTAINERS ========== -->
+  <section id="containers" class="section">
+    <div class="section-header">
+      <span class="section-tag">Deep Dive</span>
+      <h2>My Containers</h2>
+      <p>Every container in this project — its purpose, configuration, and actual code.</p>
+    </div>
+
+    <div class="containers-list">
+
+      <!-- NGINX -->
+      <div class="container-card fade-in" data-container="nginx">
+        <div class="container-card-header" style="--container-color: #3b82f6">
+          <div class="container-icon" style="background: #3b82f6">N</div>
+          <div>
+            <h3>Nginx</h3>
+            <span class="container-role">Reverse Proxy &amp; SSL Termination</span>
+          </div>
+          <span class="container-badge mandatory">Mandatory</span>
+        </div>
+        <div class="container-card-body">
+          <p>Nginx is the <strong>entry gate</strong> to the infrastructure. It listens on port 443 with a self-signed TLS certificate and routes incoming HTTPS requests to the appropriate backend service via FastCGI.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 443 (HTTPS)</span>
+                <span class="pill">TLS: v1.2 & v1.3</span>
+                <span class="pill">RSA 4096-bit cert</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+RUN apt-get update && apt-get install -y nginx openssl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /etc/nginx/sites-enabled/*
+
+RUN mkdir -p /etc/nginx/certs && \
+    openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
+        -keyout /etc/nginx/certs/server.key \
+        -out /etc/nginx/certs/server.crt \
+        -subj "/C=MA/ST=Rabat-sale/L=Rabat/O=UM6P-1337/OU=1337-cluster-1/CN=oobbad.42.fr"
+
+COPY config/nginx.conf /etc/nginx/sites-enabled/
+
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Nginx Configuration <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name oobbad.42.fr;
+    ssl_certificate /etc/nginx/certs/server.crt;
+    ssl_certificate_key /etc/nginx/certs/server.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+    
+    location ~ \.php$ {
+        fastcgi_pass wordpress:9000;
+        include fastcgi.conf;
+    }
+
+    location /adminer {
+        include fastcgi_params;
+        fastcgi_pass adminer:8080;
+        fastcgi_param SCRIPT_FILENAME /var/www/html/adminer/adminer.php;
+    }
+}</code></pre>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Volumes</h4>
+              <p><code>wordpress_data → /var/www/html</code> — serves WordPress static files (CSS, JS, images)</p>
+            </div>
+            <div class="detail-group">
+              <h4>Dependencies</h4>
+              <p>Depends on: <strong>wordpress</strong>, <strong>adminer</strong>, <strong>dns</strong></p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>No HTTPS access. No TLS encryption. WordPress and Adminer become completely unreachable from outside the Docker network. The entire website goes down.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORDPRESS -->
+      <div class="container-card fade-in" data-container="wordpress">
+        <div class="container-card-header" style="--container-color: #22c55e">
+          <div class="container-icon" style="background: #22c55e">W</div>
+          <div>
+            <h3>WordPress</h3>
+            <span class="container-role">PHP-FPM Application Server</span>
+          </div>
+          <span class="container-badge mandatory">Mandatory</span>
+        </div>
+        <div class="container-card-body">
+          <p>WordPress runs on PHP-FPM 8.2, serving as the core web application. It handles dynamic content generation, communicates with MariaDB for data persistence and Redis for caching.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 9000 (FastCGI)</span>
+                <span class="pill">PHP 8.2 FPM</span>
+                <span class="pill">WP-CLI installed</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y \
+    php php-fpm php-mysql php-curl php-gd \
+    php-mbstring php-xml php-zip php-opcache \
+    php-redis curl tar mariadb-client \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    -o /usr/local/bin/wp \
+    && chmod +x /usr/local/bin/wp
+
+RUN sed -i 's/^listen = .*/listen = 0.0.0.0:9000/' \
+    /etc/php/8.2/fpm/pool.d/www.conf
+
+WORKDIR /var/www/html
+COPY tools/wordpress.sh /usr/local/bin/wordpress.sh
+RUN chmod +x /usr/local/bin/wordpress.sh
+CMD ["/usr/local/bin/wordpress.sh"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Startup Process <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <ol class="startup-steps">
+                  <li>Source secrets from <code>/run/secrets/wp_credentials</code></li>
+                  <li>Validate all required variables are present</li>
+                  <li>Download WordPress if <code>index.php</code> doesn't exist</li>
+                  <li>Wait for MariaDB to be ready (up to 30 attempts, 2s interval)</li>
+                  <li>Create <code>wp-config.php</code> via <code>wp config create</code></li>
+                  <li>Install WordPress core with <code>wp core install</code></li>
+                  <li>Create a second user with author role</li>
+                  <li>Install and activate Redis cache plugin</li>
+                  <li>Set ownership to <code>www-data</code></li>
+                  <li>Start <code>php-fpm8.2 -F</code> (foreground mode)</li>
+                </ol>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Volumes</h4>
+              <p><code>wordpress_data → /var/www/html</code> — stores WordPress files, themes, plugins, uploads</p>
+            </div>
+            <div class="detail-group">
+              <h4>Dependencies</h4>
+              <p>Depends on: <strong>mariadb</strong>, <strong>redis</strong></p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>No web application. Nginx returns 502 Bad Gateway for all requests. The entire site is non-functional.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARIADB -->
+      <div class="container-card fade-in" data-container="mariadb">
+        <div class="container-card-header" style="--container-color: #f97316">
+          <div class="container-icon" style="background: #f97316">M</div>
+          <div>
+            <h3>MariaDB</h3>
+            <span class="container-role">Database Server</span>
+          </div>
+          <span class="container-badge mandatory">Mandatory</span>
+        </div>
+        <div class="container-card-body">
+          <p>MariaDB stores all WordPress data: posts, pages, users, settings, and plugin data. It's the persistent data backbone of the application.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 3306 (MySQL)</span>
+                <span class="pill">bind-address: 0.0.0.0</span>
+                <span class="pill">DB: inception_db</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        mariadb-server mariadb-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/mysql
+RUN mkdir -p /run/mysqld /var/lib/mysql && \
+    chown -R mysql:mysql /run/mysqld /var/lib/mysql
+COPY tools/mariadb.sh tools/
+RUN chmod +x tools/mariadb.sh
+ENTRYPOINT [ "tools/mariadb.sh" ]
+CMD ["mariadbd", "--user=mysql", "--bind-address=0.0.0.0"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Startup Process <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <ol class="startup-steps">
+                  <li>Read root password from <code>/run/secrets/db_root_passwd</code></li>
+                  <li>Read user password from <code>/run/secrets/db_passwd</code></li>
+                  <li>Validate all variables are present</li>
+                  <li>If first boot: run <code>mariadb-install-db --user=mysql</code></li>
+                  <li>Start temporary MariaDB server in background</li>
+                  <li>Wait for it to be ready (up to 30 attempts)</li>
+                  <li>Set root password, create database, create user, grant privileges</li>
+                  <li>Shutdown temporary server</li>
+                  <li>Exec <code>mariadbd --user=mysql --bind-address=0.0.0.0</code></li>
+                </ol>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Volumes</h4>
+              <p><code>mariadb_data → /var/lib/mysql</code> — stores all database files, tables, indices</p>
+            </div>
+            <div class="detail-group">
+              <h4>Secrets</h4>
+              <p><code>db_passwd</code>, <code>db_root_passwd</code></p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>WordPress cannot store or retrieve any data. All content, users, and settings are inaccessible. The site fails to load entirely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REDIS -->
+      <div class="container-card fade-in" data-container="redis">
+        <div class="container-card-header" style="--container-color: #ef4444">
+          <div class="container-icon" style="background: #ef4444">R</div>
+          <div>
+            <h3>Redis</h3>
+            <span class="container-role">Object Cache Server</span>
+          </div>
+          <span class="container-badge bonus">Bonus</span>
+        </div>
+        <div class="container-card-body">
+          <p>Redis provides in-memory caching for WordPress. It stores frequently accessed data (rendered pages, database queries) to reduce MariaDB load and speed up responses.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 6379 (Redis)</span>
+                <span class="pill">bind: 0.0.0.0</span>
+                <span class="pill">protected-mode: no</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+
+RUN apt-get update && \
+    apt-get install -y lsb-release curl gpg && \
+    curl -fsSL https://packages.redis.io/gpg | \
+    gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg && \
+    chmod 644 /usr/share/keyrings/redis-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/redis-archive-keyring.gpg] \
+    https://packages.redis.io/deb $(lsb_release -cs) main" | \
+    tee /etc/apt/sources.list.d/redis.list && \
+    apt-get update && \
+    apt-get install -y redis-server && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's/^bind 127.0.0.1 -::1/bind 0.0.0.0/' /etc/redis/redis.conf
+RUN sed -i 's/^protected-mode yes/protected-mode no/' /etc/redis/redis.conf
+
+CMD ["redis-server", "/etc/redis/redis.conf"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>WordPress Integration</h4>
+              <p>The <code>wordpress.sh</code> script installs the <code>redis-cache</code> plugin and configures <code>WP_REDIS_HOST=redis</code> on port <code>6379</code>. Object cache is stored in <code>/wp-content/object-cache.php</code>.</p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>WordPress still works, but slower. Every page load hits MariaDB directly. No caching layer means higher database load and slower response times.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMINER -->
+      <div class="container-card fade-in" data-container="adminer">
+        <div class="container-card-header" style="--container-color: #a855f7">
+          <div class="container-icon" style="background: #a855f7">A</div>
+          <div>
+            <h3>Adminer</h3>
+            <span class="container-role">Database Management UI</span>
+          </div>
+          <span class="container-badge bonus">Bonus</span>
+        </div>
+        <div class="container-card-body">
+          <p>Adminer is a lightweight, single-file PHP database management tool. It provides a web interface to inspect and manage the MariaDB database — like phpMyAdmin but much simpler.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 8080 (FastCGI)</span>
+                <span class="pill">PHP 8.2 FPM</span>
+                <span class="pill">Adminer v4.8.1</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    php-fpm php-mysql php-mbstring wget \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN sed -i 's|^listen = .*|listen = 0.0.0.0:8080|' \
+    /etc/php/8.2/fpm/pool.d/www.conf && \
+    mkdir -p /var/www/html/adminer /run/php
+
+WORKDIR /var/www/html/adminer
+RUN wget --no-check-certificate \
+    https://github.com/vrana/adminer/releases/download/v4.8.1/adminer-4.8.1.php \
+    -O adminer.php
+
+CMD ["php-fpm8.2", "-F"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Access</h4>
+              <p>Available at <code>https://oobbad.42.fr/adminer</code> through the Nginx reverse proxy (<code>fastcgi_pass adminer:8080</code>).</p>
+            </div>
+            <div class="detail-group">
+              <h4>Dependencies</h4>
+              <p>Depends on: <strong>mariadb</strong></p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>No visual database management. You'd need to use the command-line <code>mysql</code> client via <code>docker exec</code>. No impact on WordPress functionality.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FTP -->
+      <div class="container-card fade-in" data-container="ftp">
+        <div class="container-card-header" style="--container-color: #eab308">
+          <div class="container-icon" style="background: #eab308; color: #000">F</div>
+          <div>
+            <h3>FTP</h3>
+            <span class="container-role">File Transfer Server</span>
+          </div>
+          <span class="container-badge bonus">Bonus</span>
+        </div>
+        <div class="container-card-body">
+          <p>Provides FTP access to the WordPress file system via vsftpd. Allows uploading themes, plugins, and media files directly to <code>/var/www/html</code>.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 21 (FTP control)</span>
+                <span class="pill">Ports: 6000-6010 (passive)</span>
+                <span class="pill">vsftpd</span>
+                <span class="pill">Network: inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">Dockerfile <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-dockerfile">FROM debian:bookworm-slim
+
+RUN apt-get update && \
+    apt-get install -y vsftpd && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY tools/ftp.sh /tools/ftp.sh
+RUN chmod +x /tools/ftp.sh 
+
+EXPOSE 21
+EXPOSE 6000-6010
+
+ENTRYPOINT ["/tools/ftp.sh"]
+CMD ["vsftpd", "/etc/vsftpd.conf"]</code></pre>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>Volumes</h4>
+              <p><code>wordpress_data → /var/www/html</code> — shared with nginx and wordpress, enables file uploads</p>
+            </div>
+            <div class="detail-group">
+              <h4>Dependencies</h4>
+              <p>Depends on: <strong>wordpress</strong></p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p>No FTP file upload capability. Must manage files through the WordPress web UI or <code>docker exec</code>. No impact on site operation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DNS -->
+      <div class="container-card fade-in" data-container="dns">
+        <div class="container-card-header" style="--container-color: #06b6d4">
+          <div class="container-icon" style="background: #06b6d4">D</div>
+          <div>
+            <h3>DNS</h3>
+            <span class="container-role">Local Domain Resolver</span>
+          </div>
+          <span class="container-badge bonus">Bonus</span>
+        </div>
+        <div class="container-card-body">
+          <p>Runs dnsmasq to resolve <code>oobbad.42.fr</code> to the host machine's IP. Enables the <code>.42.fr</code> domain to work locally without modifying <code>/etc/hosts</code>.</p>
+          <div class="container-details">
+            <div class="detail-group">
+              <h4>Configuration</h4>
+              <div class="detail-pills">
+                <span class="pill">Port: 53 (DNS)</span>
+                <span class="pill">network_mode: host</span>
+                <span class="pill">dnsmasq</span>
+                <span class="pill">⚠️ Not on inception-net</span>
+              </div>
+            </div>
+            <div class="detail-group expandable">
+              <h4 class="expand-trigger">dnsmasq.conf <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></h4>
+              <div class="expand-content">
+                <pre><code class="language-conf">listen-address=0.0.0.0
+bind-interfaces
+address=/oobbad.42.fr/10.152.16.116
+server=8.8.8.8
+server=1.1.1.1</code></pre>
+              </div>
+            </div>
+            <div class="detail-group">
+              <h4>How It Works</h4>
+              <p>The Makefile locks <code>/etc/resolv.conf</code> to point to this container (using <code>chattr +i</code>). All DNS queries go through dnsmasq. Queries for <code>oobbad.42.fr</code> resolve locally; all other queries are forwarded to Google (8.8.8.8) and Cloudflare (1.1.1.1).</p>
+            </div>
+            <div class="detail-group impact">
+              <h4>⚠️ If Removed</h4>
+              <p><code>oobbad.42.fr</code> won't resolve. You must manually add entries to <code>/etc/hosts</code>. The Makefile DNS locking mechanism would break.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== DOCKER COMPOSE ========== -->
+  <section id="compose" class="section">
+    <div class="section-header">
+      <span class="section-tag">Configuration</span>
+      <h2>Docker Compose Explained</h2>
+      <p>A walkthrough of the actual <code>docker-compose.yml</code> — what each directive does and why.</p>
+    </div>
+
+    <div class="compose-walkthrough">
+      <div class="compose-block fade-in">
+        <h3>Networks</h3>
+        <pre><code class="language-yaml">networks:
+  inception-net:
+    driver: bridge</code></pre>
+        <div class="compose-explanation">
+          <p>Defines a single <strong>bridge network</strong> called <code>inception-net</code>. This creates an isolated virtual network where containers can communicate using their names as hostnames. Docker's embedded DNS automatically resolves <code>mariadb</code>, <code>wordpress</code>, <code>redis</code>, etc. to their container IPs.</p>
+          <p>The <strong>bridge driver</strong> is Docker's default — it creates a software bridge on the host that containers connect to via virtual Ethernet pairs (veth interfaces).</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Volumes</h3>
+        <pre><code class="language-yaml">volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/mariadb
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${LOGIN}/data/wordpress</code></pre>
+        <div class="compose-explanation">
+          <p>Two named volumes with <strong>bind mount behavior</strong>. The <code>driver_opts</code> trick uses the local driver with <code>type: none</code> and <code>o: bind</code> to mount specific host directories.</p>
+          <p><strong>Why not regular bind mounts?</strong> Named volumes appear in <code>docker volume ls</code> and can be managed with Docker commands. The <code>${LOGIN}</code> variable (set to <code>oualid</code>) makes the paths portable.</p>
+          <p><code>mariadb_data</code> persists the database at <code>/home/oualid/data/mariadb</code>. <code>wordpress_data</code> persists WordPress files at <code>/home/oualid/data/wordpress</code>.</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Secrets</h3>
+        <pre><code class="language-yaml">secrets:
+  db_passwd:
+    file: ../secrets/db_password.txt
+  db_root_passwd:
+    file: ../secrets/db_root_password.txt
+  wp_credentials:
+    file: ../secrets/wp_credentials.txt
+  ftp_credentials:
+    file: ../secrets/ftp_credentials.txt</code></pre>
+        <div class="compose-explanation">
+          <p>Docker secrets store sensitive data (passwords, credentials) securely. They're mounted as <strong>read-only files</strong> at <code>/run/secrets/&lt;name&gt;</code> inside containers — never exposed as environment variables, never visible in logs or <code>docker inspect</code>.</p>
+          <p>Each secret file is in the <code>../secrets/</code> directory (outside the <code>srcs/</code> directory). Only containers that explicitly list a secret in their <code>secrets:</code> key can access it.</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Services — MariaDB</h3>
+        <pre><code class="language-yaml">  mariadb:
+    container_name: mariadb
+    build: ./requirements/mariadb
+    networks:
+      - inception-net
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env
+    secrets:
+      - db_passwd
+      - db_root_passwd
+    restart: on-failure</code></pre>
+        <div class="compose-explanation">
+          <p><code>build</code> points to the directory containing the Dockerfile. <code>container_name</code> sets a fixed name (also used as DNS hostname). <code>env_file</code> loads environment variables from <code>.env</code>. <code>restart: on-failure</code> restarts the container if it crashes (but not if stopped manually).</p>
+          <p>No <code>depends_on</code> — MariaDB is the foundation that other services wait for.</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Services — WordPress</h3>
+        <pre><code class="language-yaml">  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    networks:
+      - inception-net
+    volumes:
+      - wordpress_data:/var/www/html
+    env_file:
+      - .env
+    secrets:
+      - wp_credentials
+    depends_on:
+      - mariadb
+      - redis
+    restart: on-failure</code></pre>
+        <div class="compose-explanation">
+          <p><code>depends_on</code> ensures MariaDB and Redis containers are <strong>started before</strong> WordPress. Note: this only controls startup order, not readiness. That's why <code>wordpress.sh</code> includes its own wait loop that polls MariaDB until it responds.</p>
+          <p>The <code>wordpress_data</code> volume at <code>/var/www/html</code> is shared with Nginx (for serving static files) and FTP (for file uploads).</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Services — Nginx</h3>
+        <pre><code class="language-yaml">  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    networks:
+      - inception-net
+    volumes:
+      - wordpress_data:/var/www/html
+    ports:
+      - "443:443"
+    depends_on:
+      - wordpress
+      - adminer
+      - dns
+    restart: on-failure</code></pre>
+        <div class="compose-explanation">
+          <p><code>ports: "443:443"</code> maps host port 443 to container port 443 — this is the only publicly accessible port for the main website. Nginx is the last service to start because it depends on everything it proxies to.</p>
+          <p>It mounts <code>wordpress_data</code> to serve static assets directly without going through PHP-FPM (the <code>try_files</code> directive checks the filesystem first).</p>
+        </div>
+      </div>
+
+      <div class="compose-block fade-in">
+        <h3>Services — DNS (Host Network)</h3>
+        <pre><code class="language-yaml">  dns:
+    container_name: dns
+    build: ./requirements/bonus/dns
+    network_mode: "host"
+    restart: on-failure</code></pre>
+        <div class="compose-explanation">
+          <p><code>network_mode: "host"</code> is unique — this container doesn't join <code>inception-net</code>. Instead, it shares the host's network stack directly. This allows dnsmasq to listen on port 53 on the host's actual IP address, intercepting DNS queries before they leave the machine.</p>
+          <p>This is necessary because the Makefile configures the host's <code>/etc/resolv.conf</code> to point to this container's DNS service.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== NETWORKING ========== -->
+  <section id="networking" class="section">
+    <div class="section-header">
+      <span class="section-tag">Infrastructure</span>
+      <h2>Docker Networking</h2>
+      <p>How containers communicate and the network topology of this project.</p>
+    </div>
+
+    <div class="network-content fade-in">
+      <div class="network-diagram">
+        <div class="net-box net-host">
+          <div class="net-label">Host Machine</div>
+          <div class="net-box net-bridge">
+            <div class="net-label">inception-net (bridge)</div>
+            <div class="net-services">
+              <div class="net-service" style="border-color:#3b82f6"><strong>nginx</strong><br>:443</div>
+              <div class="net-service" style="border-color:#22c55e"><strong>wordpress</strong><br>:9000</div>
+              <div class="net-service" style="border-color:#f97316"><strong>mariadb</strong><br>:3306</div>
+              <div class="net-service" style="border-color:#ef4444"><strong>redis</strong><br>:6379</div>
+              <div class="net-service" style="border-color:#a855f7"><strong>adminer</strong><br>:8080</div>
+              <div class="net-service" style="border-color:#eab308"><strong>ftp</strong><br>:21</div>
+            </div>
+          </div>
+          <div class="net-host-service" style="border-color:#06b6d4">
+            <strong>dns</strong> (host network)<br>:53
+          </div>
+        </div>
+      </div>
+
+      <div class="network-explanations">
+        <div class="net-explain-card">
+          <h3>Bridge Network: inception-net</h3>
+          <p>Six containers share the <code>inception-net</code> bridge network. Docker creates a virtual bridge (<code>br-xxxxx</code>) on the host and connects each container via a virtual Ethernet pair (veth). Containers on this network can reach each other by name using Docker's embedded DNS resolver at <code>127.0.0.11</code>.</p>
+        </div>
+        <div class="net-explain-card">
+          <h3>Host Network: DNS Container</h3>
+          <p>The DNS container uses <code>network_mode: "host"</code>, which means it skips network isolation entirely and directly uses the host's network interfaces. This is necessary so dnsmasq can bind to the host's IP address (10.152.16.116) on port 53 and intercept all DNS queries.</p>
+        </div>
+        <div class="net-explain-card">
+          <h3>Port Mapping</h3>
+          <p>Only two services expose ports to the host: <strong>Nginx</strong> (<code>443:443</code>) and <strong>FTP</strong> (<code>21:21</code>, <code>6000-6010:6000-6010</code>). All other services (WordPress:9000, MariaDB:3306, Redis:6379, Adminer:8080) are <strong>internal only</strong> — accessible only from within the Docker network.</p>
+        </div>
+        <div class="net-explain-card">
+          <h3>FastCGI Protocol</h3>
+          <p>Nginx communicates with WordPress and Adminer using the <strong>FastCGI protocol</strong>, not HTTP. FastCGI is a binary protocol optimized for forwarding requests to PHP-FPM. The <code>fastcgi_pass</code> directive in nginx.conf specifies the upstream server: <code>wordpress:9000</code> for WordPress, <code>adminer:8080</code> for Adminer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== STORAGE ========== -->
+  <section id="storage" class="section">
+    <div class="section-header">
+      <span class="section-tag">Persistence</span>
+      <h2>Docker Storage</h2>
+      <p>How data persists across container restarts and rebuilds.</p>
+    </div>
+
+    <div class="storage-content fade-in">
+      <div class="storage-diagram">
+        <div class="storage-layer host-layer">
+          <div class="storage-label">Host Filesystem</div>
+          <div class="storage-paths">
+            <div class="storage-path">
+              <code>/home/oualid/data/mariadb/</code>
+              <span class="storage-arrow">↕</span>
+              <span class="volume-name">mariadb_data</span>
+            </div>
+            <div class="storage-path">
+              <code>/home/oualid/data/wordpress/</code>
+              <span class="storage-arrow">↕</span>
+              <span class="volume-name">wordpress_data</span>
+            </div>
+          </div>
+        </div>
+        <div class="storage-connections">
+          <div class="storage-connection">
+            <span class="volume-name">mariadb_data</span>
+            <span class="storage-arrow">→</span>
+            <span class="mount-point">/var/lib/mysql</span>
+            <span class="mount-container" style="color:#f97316">mariadb</span>
+          </div>
+          <div class="storage-connection">
+            <span class="volume-name">wordpress_data</span>
+            <span class="storage-arrow">→</span>
+            <span class="mount-point">/var/www/html</span>
+            <span class="mount-container" style="color:#3b82f6">nginx</span>
+            <span class="mount-container" style="color:#22c55e">wordpress</span>
+            <span class="mount-container" style="color:#eab308">ftp</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="storage-explanations">
+        <div class="storage-card">
+          <h3>Why Bind Mounts via Named Volumes?</h3>
+          <p>This project uses a clever technique: named volumes with <code>driver_opts</code> that specify <code>type: none</code> and <code>o: bind</code>. This gives the benefits of both approaches — the volumes appear in <code>docker volume ls</code> and can be managed by Docker, while the data is stored at a known location on the host filesystem.</p>
+        </div>
+        <div class="storage-card">
+          <h3>Shared Volume: wordpress_data</h3>
+          <p>The <code>wordpress_data</code> volume is mounted by <strong>three containers</strong>: WordPress (reads/writes PHP files), Nginx (reads static assets to serve directly), and FTP (allows file uploads). This shared access is what enables the architecture to work — WordPress generates content, Nginx serves it, and FTP allows file management.</p>
+        </div>
+        <div class="storage-card">
+          <h3>What Happens Without Volumes?</h3>
+          <p>Without volumes, all data lives in the container's writable layer. Running <code>docker compose down</code> destroys the containers and <strong>all data is lost</strong>: database entries, WordPress posts, uploaded files — everything. Volumes ensure data survives container lifecycle events.</p>
+        </div>
+        <div class="storage-card">
+          <h3>The Makefile's Data Management</h3>
+          <p>The Makefile creates data directories with <code>mkdir -p</code> during <code>make up</code> and removes them with <code>sudo rm -rf</code> during <code>make fclean</code>. The <code>clean</code> target uses <code>docker compose down -v</code> to remove Docker volumes, while <code>fclean</code> additionally removes the host directories for a complete reset.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== REQUEST FLOW ========== -->
+  <section id="request-flow" class="section">
+    <div class="section-header">
+      <span class="section-tag">Data Flow</span>
+      <h2>Request Flow</h2>
+      <p>What happens when you visit <code>https://oobbad.42.fr</code> — step by step.</p>
+    </div>
+
+    <div id="flow-container" class="flow-container fade-in">
+      <div class="flow-timeline">
+        <div class="flow-step" data-step="1">
+          <div class="flow-step-marker" style="--step-color: #94a3b8">1</div>
+          <div class="flow-step-content">
+            <h4>🌐 Browser Request</h4>
+            <p>You type <code>https://oobbad.42.fr</code> in your browser. The browser needs to resolve this domain name to an IP address.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="2">
+          <div class="flow-step-marker" style="--step-color: #06b6d4">2</div>
+          <div class="flow-step-content">
+            <h4>🔍 DNS Resolution</h4>
+            <p>The OS checks <code>/etc/resolv.conf</code>, which points to <code>10.152.16.116</code> (the dnsmasq container). Dnsmasq matches <code>oobbad.42.fr</code> against its <code>address=</code> rule and returns the host IP. No external DNS query needed.</p>
+            <div class="flow-detail">
+              <code>address=/oobbad.42.fr/10.152.16.116</code>
+            </div>
+          </div>
+        </div>
+        <div class="flow-step" data-step="3">
+          <div class="flow-step-marker" style="--step-color: #3b82f6">3</div>
+          <div class="flow-step-content">
+            <h4>🔒 TLS Handshake</h4>
+            <p>The browser connects to port <code>443</code> on the resolved IP. Nginx presents its self-signed TLS certificate (RSA 4096-bit). The browser may warn about the self-signed cert. After accepting, a secure TLS 1.2 or 1.3 session is established.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="4">
+          <div class="flow-step-marker" style="--step-color: #3b82f6">4</div>
+          <div class="flow-step-content">
+            <h4>📋 Nginx Routing</h4>
+            <p>Nginx receives the HTTPS request and checks its <code>location</code> blocks. For PHP files, it matches <code>location ~ \.php$</code> and forwards via FastCGI. For static files (CSS, JS, images), <code>try_files</code> serves them directly from the <code>wordpress_data</code> volume.</p>
+            <div class="flow-detail">
+              <code>fastcgi_pass wordpress:9000;</code>
+            </div>
+          </div>
+        </div>
+        <div class="flow-step" data-step="5">
+          <div class="flow-step-marker" style="--step-color: #22c55e">5</div>
+          <div class="flow-step-content">
+            <h4>⚡ PHP-FPM Processing</h4>
+            <p>WordPress receives the request via FastCGI on port 9000. PHP-FPM spawns a worker process to execute the WordPress PHP code. WordPress first checks the Redis cache for a cached version of the requested page.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="6">
+          <div class="flow-step-marker" style="--step-color: #ef4444">6</div>
+          <div class="flow-step-content">
+            <h4>💨 Redis Cache Check</h4>
+            <p>WordPress queries Redis at <code>redis:6379</code> for cached data. On a <strong>cache hit</strong>, the cached response is returned immediately (skipping the database). On a <strong>cache miss</strong>, WordPress proceeds to query MariaDB.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="7">
+          <div class="flow-step-marker" style="--step-color: #f97316">7</div>
+          <div class="flow-step-content">
+            <h4>🗄️ Database Query</h4>
+            <p>WordPress connects to MariaDB at <code>mariadb:3306</code> using the credentials from secrets. It queries the <code>inception_db</code> database for posts, pages, settings, and user data. Results are returned to PHP.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="8">
+          <div class="flow-step-marker" style="--step-color: #22c55e">8</div>
+          <div class="flow-step-content">
+            <h4>🏗️ Page Rendering</h4>
+            <p>WordPress assembles the HTML page using the database results, applies the active theme, and stores the result in Redis cache for future requests. The rendered HTML is returned to Nginx via FastCGI.</p>
+          </div>
+        </div>
+        <div class="flow-step" data-step="9">
+          <div class="flow-step-marker" style="--step-color: #3b82f6">9</div>
+          <div class="flow-step-content">
+            <h4>📤 Response Delivery</h4>
+            <p>Nginx receives the HTML from WordPress and sends it back to the browser over the TLS-encrypted connection. The browser renders the page, loading additional static assets (CSS, JS, images) which Nginx serves directly from the shared volume.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SCRIPTS EXPLAINED ========== -->
+  <section id="scripts" class="section">
+    <div class="section-header">
+      <span class="section-tag">Code</span>
+      <h2>Scripts Explained</h2>
+      <p>Line-by-line breakdown of the initialization scripts that make the containers work.</p>
+    </div>
+
+    <div class="scripts-container">
+
+      <!-- mariadb.sh -->
+      <div class="script-block fade-in">
+        <div class="script-header">
+          <h3>mariadb.sh</h3>
+          <span class="script-container-badge" style="background:#f97316">mariadb</span>
+          <span class="script-type">ENTRYPOINT script</span>
+        </div>
+        <div class="script-description">
+          <p>This script initializes the MariaDB database on first boot. It reads passwords from Docker secrets, installs the system tables, creates the application database and user, then hands off to the actual MariaDB server process.</p>
+        </div>
+        <div class="script-code-explained">
+
+          <div class="code-group">
+            <pre><code>#!/bin/sh
+set -e</code></pre>
+            <div class="code-explanation">
+              <p><code>#!/bin/sh</code> — Use the POSIX shell (lightweight, available in all containers).</p>
+              <p><code>set -e</code> — <strong>Exit immediately</strong> if any command fails. This is critical for initialization scripts — if any step fails, we don't want to continue with a broken setup.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if [ -f /run/secrets/db_root_passwd ]; then
+    MYSQL_ROOT_PASSWORD=$(cat /run/secrets/db_root_passwd)
+fi
+
+if [ -f /run/secrets/db_passwd ]; then
+    MYSQL_PASSWORD=$(cat /run/secrets/db_passwd)
+fi</code></pre>
+            <div class="code-explanation">
+              <p>Reads passwords from Docker secrets. The <code>-f</code> flag checks if the file exists. <code>cat</code> reads the file content into a variable. This is more secure than passing passwords as environment variables, which would be visible in <code>docker inspect</code>.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if [ -z "$MYSQL_ROOT_PASSWORD" ] || [ -z "$MYSQL_DATABASE" ] || \
+   [ -z "$MYSQL_USER" ] || [ -z "$MYSQL_PASSWORD" ]; then
+    echo "[ERROR] ..." >&2
+    exit 1
+fi</code></pre>
+            <div class="code-explanation">
+              <p><code>-z</code> checks if a variable is empty. This validation ensures all required variables are set before proceeding. <code>&gt;&2</code> sends the error message to stderr (standard error). <code>exit 1</code> terminates with a non-zero status code (indicating failure).</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if [ ! -d "/var/lib/mysql/mysql" ]; then
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql > /dev/null</code></pre>
+            <div class="code-explanation">
+              <p><code>! -d</code> checks if the <code>mysql</code> system database directory does <strong>not</strong> exist — meaning this is the first boot. <code>mariadb-install-db</code> creates the system tables (user accounts, privileges). <code>--user=mysql</code> ensures files are owned by the mysql user. Output is suppressed with <code>&gt; /dev/null</code>.</p>
+              <p><strong>On subsequent boots</strong>, this entire block is skipped because <code>/var/lib/mysql/mysql</code> already exists (persisted by the volume).</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>    mariadbd --user=mysql &
+    pid="$!"
+
+    while ! mysqladmin ping --silent; do
+        counter=$((counter + 1))
+        if [ "$counter" -ge "$max_attempts" ]; then
+            echo "[ERROR] MariaDB failed to start" >&2
+            kill -9 "$pid" 2>/dev/null || true
+            exit 1
+        fi
+        sleep 1
+    done</code></pre>
+            <div class="code-explanation">
+              <p>Starts a <strong>temporary</strong> MariaDB server in the background (<code>&</code>) and captures its PID (<code>$!</code>). Then polls with <code>mysqladmin ping</code> until the server is ready, with a 30-second timeout. If it fails to start, the script kills the process and exits.</p>
+              <p><strong>Why a temporary server?</strong> We need a running server to execute SQL commands (create users, databases). After initialization, we shut it down and start the real server with <code>exec</code>.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>    mysql -u root << EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';
+CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';
+FLUSH PRIVILEGES;
+EOF</code></pre>
+            <div class="code-explanation">
+              <p>SQL commands executed via heredoc (<code>&lt;&lt; EOF</code>):</p>
+              <ul>
+                <li><code>ALTER USER</code> — Sets the root password (no password by default after install)</li>
+                <li><code>CREATE DATABASE</code> — Creates <code>inception_db</code></li>
+                <li><code>CREATE USER</code> — Creates <code>inception_user</code> accessible from any host (<code>@'%'</code>)</li>
+                <li><code>GRANT ALL</code> — Gives the user full access to the database</li>
+                <li><code>FLUSH PRIVILEGES</code> — Reloads the privilege tables</li>
+              </ul>
+              <p>The backtick escapes (<code>\`</code>) protect database names with special characters.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>    mysqladmin -u root -p"${MYSQL_ROOT_PASSWORD}" shutdown
+    wait "$pid"
+fi
+
+exec "$@"</code></pre>
+            <div class="code-explanation">
+              <p><code>mysqladmin shutdown</code> cleanly stops the temporary server. <code>wait "$pid"</code> ensures the process is fully terminated before continuing.</p>
+              <p><code>exec "$@"</code> is the key pattern — it replaces the current shell process with the <code>CMD</code> from the Dockerfile: <code>mariadbd --user=mysql --bind-address=0.0.0.0</code>. This makes MariaDB <strong>PID 1</strong> in the container, which is important for signal handling and container lifecycle.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- wordpress.sh -->
+      <div class="script-block fade-in">
+        <div class="script-header">
+          <h3>wordpress.sh</h3>
+          <span class="script-container-badge" style="background:#22c55e">wordpress</span>
+          <span class="script-type">CMD script</span>
+        </div>
+        <div class="script-description">
+          <p>This script is the main entry point for the WordPress container. It handles credential loading, WordPress download, database connection waiting, WP-CLI configuration, Redis cache setup, and finally starts PHP-FPM.</p>
+        </div>
+        <div class="script-code-explained">
+
+          <div class="code-group">
+            <pre><code>#!/bin/bash
+set -e
+
+if [ ! -f /run/secrets/wp_credentials ]; then
+    echo "[ERROR] wp_credentials is missing!" >&2
+    exit 1
+fi
+source /run/secrets/wp_credentials</code></pre>
+            <div class="code-explanation">
+              <p>Uses <code>bash</code> (not <code>sh</code>) because <code>source</code> is a bash built-in. The <code>wp_credentials</code> secret file contains variable assignments like <code>DB_PASSWORD=...</code>, <code>WP_ADMIN_PASSWORD=...</code>, etc. The <code>source</code> command executes the file in the current shell, loading all variables into the environment.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if [ ! -f "$WP_DIR/index.php" ]; then
+    rm -f "$WP_DIR/index.html"
+    curl -fsSL https://wordpress.org/latest.tar.gz -o /tmp/wordpress.tar.gz
+    tar -xzf /tmp/wordpress.tar.gz -C /tmp
+    cp -a /tmp/wordpress/. "$WP_DIR/"
+    rm -rf /tmp/wordpress /tmp/wordpress.tar.gz
+fi</code></pre>
+            <div class="code-explanation">
+              <p>Downloads WordPress only if <code>index.php</code> doesn't exist (first boot). <code>curl -fsSL</code> downloads silently but fails on HTTP errors (<code>-f</code>). The tarball is extracted to <code>/tmp</code> first, then copied to <code>/var/www/html</code>. The <code>-a</code> flag preserves permissions. Temp files are cleaned up.</p>
+              <p><strong>On subsequent boots</strong>, WordPress files already exist in the persistent volume, so this is skipped.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>until mariadb -h"$DB_HOST" -u"$MYSQL_USER" -p"$DB_PASSWORD" -e "SELECT 1;" >/dev/null 2>&1; do
+    counter=$((counter + 1))
+    if [ "$counter" -ge "$max_attempts" ]; then
+        echo "[ERROR] MariaDB failed to start" >&2
+        exit 1
+    fi
+    sleep 2
+done</code></pre>
+            <div class="code-explanation">
+              <p>Waits for MariaDB to be <strong>fully ready</strong>, not just started. The <code>until</code> loop runs <code>SELECT 1</code> against MariaDB every 2 seconds for up to 30 attempts (60 seconds). This is necessary because <code>depends_on</code> in docker-compose only ensures the container has started — not that the database server is accepting connections.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>wp config create --path="$WP_DIR" \
+    --dbname="$MYSQL_DATABASE" --dbuser="$MYSQL_USER" \
+    --dbpass="$DB_PASSWORD" --dbhost="$DB_HOST" --allow-root
+
+wp core install --path="$WP_DIR" --url="$WP_URL" \
+    --title="$WP_TITLE" --admin_user="$WP_ADMIN_USER" \
+    --admin_password="$WP_ADMIN_PASSWORD" \
+    --admin_email="$WP_ADMIN_EMAIL" --allow-root
+
+wp user create "$WP_USER" "$WP_USER_EMAIL" \
+    --user_pass="$WP_USER_PASSWORD" --role=author \
+    --path="$WP_DIR" --allow-root</code></pre>
+            <div class="code-explanation">
+              <p><code>wp config create</code> generates <code>wp-config.php</code> with database connection details. <code>wp core install</code> runs the WordPress installation wizard (creates tables, sets admin user). <code>wp user create</code> creates a second user with <strong>author</strong> role. <code>--allow-root</code> is needed because the script runs as root inside the container.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if [ ! -f "$WP_DIR/wp-content/object-cache.php" ]; then
+    wp config set WP_CACHE true --raw --allow-root --path="$WP_DIR"
+    wp config set WP_REDIS_HOST "$REDIS_HS" --allow-root --path="$WP_DIR"
+    wp config set WP_REDIS_PORT 6379 --raw --allow-root --path="$WP_DIR"
+    wp plugin install redis-cache --activate --allow-root --path="$WP_DIR" --force
+    wp redis enable --allow-root --path="$WP_DIR"
+fi
+
+chown -R www-data:www-data /var/www/html
+exec php-fpm8.2 -F</code></pre>
+            <div class="code-explanation">
+              <p>Configures Redis caching only if <code>object-cache.php</code> doesn't exist (first boot). Sets <code>WP_CACHE=true</code>, configures the Redis host and port, installs and activates the <code>redis-cache</code> plugin, and enables the Redis object cache.</p>
+              <p><code>chown -R www-data:www-data</code> ensures PHP-FPM can read/write all WordPress files. <code>exec php-fpm8.2 -F</code> replaces the shell with PHP-FPM in <strong>foreground mode</strong> (<code>-F</code>), making it PID 1.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ftp.sh -->
+      <div class="script-block fade-in">
+        <div class="script-header">
+          <h3>ftp.sh</h3>
+          <span class="script-container-badge" style="background:#eab308; color:#000">ftp</span>
+          <span class="script-type">ENTRYPOINT script</span>
+        </div>
+        <div class="script-description">
+          <p>This script initializes the vsftpd FTP server. It creates an FTP user from secrets, waits for WordPress to be installed, configures vsftpd for local user access with passive mode, and starts the server.</p>
+        </div>
+        <div class="script-code-explained">
+
+          <div class="code-group">
+            <pre><code>#!/bin/bash
+
+source /run/secrets/ftp_credentials
+
+if ! id "$FTP_USER" &>/dev/null; then
+    adduser "$FTP_USER" --disabled-password --gecos ""
+    echo "$FTP_USER:$FTP_PWD" | chpasswd
+    usermod -aG 33 "$FTP_USER"
+fi</code></pre>
+            <div class="code-explanation">
+              <p>Sources FTP credentials (FTP_USER, FTP_PWD) from secrets. Creates the FTP user only if it doesn't already exist (<code>id</code> returns non-zero for non-existent users). <code>--disabled-password</code> prevents login via password (SSH), while <code>chpasswd</code> sets the FTP password. <code>usermod -aG 33</code> adds the user to group 33 (<code>www-data</code>), enabling proper file permissions.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>until [ -f /var/www/html/wp-config.php ]; do
+    sleep 1
+done
+
+chown -R 33:33 /var/www/html
+chmod -R g+w /var/www/html</code></pre>
+            <div class="code-explanation">
+              <p>Waits until WordPress is fully installed (indicated by <code>wp-config.php</code> existing). Then sets ownership to UID/GID 33 (<code>www-data</code>) and adds group write permissions. This ensures both PHP-FPM and the FTP user can read and write WordPress files.</p>
+            </div>
+          </div>
+
+          <div class="code-group">
+            <pre><code>if ! grep -q "#isconfigured" /etc/vsftpd.conf; then
+    sed -i -r "s/#write_enable=YES/write_enable=YES/1" /etc/vsftpd.conf
+    sed -i -r "s/#chroot_local_user=YES/chroot_local_user=YES/1" /etc/vsftpd.conf
+    echo "
+local_enable=YES
+allow_writeable_chroot=YES
+pasv_enable=YES
+seccomp_sandbox=NO
+local_root=/var/www/html
+pasv_min_port=6000
+pasv_max_port=6010
+local_umask=0002
+#isconfigured" >> /etc/vsftpd.conf
+fi
+mkdir -p /var/run/vsftpd/empty
+exec "$@"</code></pre>
+            <div class="code-explanation">
+              <p>Configures vsftpd only once (checks for <code>#isconfigured</code> marker). Key settings:</p>
+              <ul>
+                <li><code>write_enable=YES</code> — Allows file uploads</li>
+                <li><code>chroot_local_user=YES</code> — Jails users to their home directory</li>
+                <li><code>local_root=/var/www/html</code> — FTP root is the WordPress directory</li>
+                <li><code>pasv_min/max_port=6000-6010</code> — Passive mode port range</li>
+                <li><code>seccomp_sandbox=NO</code> — Disables seccomp (needed in containers)</li>
+                <li><code>local_umask=0002</code> — New files are group-writable</li>
+              </ul>
+              <p><code>mkdir -p /var/run/vsftpd/empty</code> creates vsftpd's required empty directory. <code>exec "$@"</code> starts <code>vsftpd /etc/vsftpd.conf</code> from the CMD.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========== DOCKER INTERNALS ========== -->
+  <section id="internals" class="section">
+    <div class="section-header">
+      <span class="section-tag">Deep Dive</span>
+      <h2>Docker Internals</h2>
+      <p>The Linux kernel features that make containers possible.</p>
+    </div>
+
+    <!-- Namespaces vs Cgroups Comparison -->
+    <div class="comparison-banner fade-in">
+      <div class="comparison-side">
+        <div class="comparison-icon">👁️</div>
+        <h3>Namespaces</h3>
+        <p class="comparison-question">"What can I see?"</p>
+        <p class="comparison-answer"><strong>Isolation</strong> — Each container gets its own private view of the system</p>
+      </div>
+      <div class="comparison-vs">vs</div>
+      <div class="comparison-side">
+        <div class="comparison-icon">📊</div>
+        <h3>Cgroups</h3>
+        <p class="comparison-question">"How much can I use?"</p>
+        <p class="comparison-answer"><strong>Resource Control</strong> — Limits how much CPU, memory, etc. each container can consume</p>
+      </div>
+    </div>
+
+    <!-- NAMESPACES -->
+    <div class="internals-section fade-in">
+      <h3 class="internals-title">Linux Namespaces</h3>
+      <div class="analogy-box">
+        <div class="analogy-icon">🏢</div>
+        <div class="analogy-content">
+          <h4>The Apartment Building Analogy</h4>
+          <p>Imagine an <strong>apartment building</strong>. Everyone lives in the same physical building (the Linux kernel). Each apartment has its own door number, its own mailbox, its own utility meters, and its own interior. From inside your apartment, you mainly see your own private environment. You don't normally see inside other apartments, even though you all share the same building structure, foundation, and roof.</p>
+          <p>Linux namespaces work the same way — they create <strong>isolated views</strong> of system resources for each container, even though all containers share the same kernel.</p>
+        </div>
+      </div>
+
+      <div class="namespace-cards">
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">PID</span>
+            <h4>Process ID Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own numbering for rooms. Apartment A calls its living room "Room 1", and Apartment B also calls its living room "Room 1" — the same number, different rooms.
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> Process IDs. Inside each container, the main process is PID 1 (like <code>mariadbd</code> or <code>php-fpm8.2</code>). Each container sees only its own processes, even though the host sees all processes across all containers with different PIDs.
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> When <code>mariadb.sh</code> uses <code>exec "$@"</code>, MariaDB becomes PID 1 inside its container. If PID 1 exits, the container stops. The host might see this process as PID 48291 — completely different numbers.
+          </div>
+        </div>
+
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">NET</span>
+            <h4>Network Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own phone line and internet connection. Apartment A's phone number is different from Apartment B's. They each have their own private network.
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> Network interfaces, IP addresses, routing tables, port numbers, and firewall rules. Each container gets its own network stack with its own <code>eth0</code>, its own IP address, and its own set of ports.
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> Both WordPress and Adminer listen on different ports (9000 and 8080) on their own network interfaces. Docker connects them to the <code>inception-net</code> bridge via virtual Ethernet pairs. The DNS container bypasses this with <code>network_mode: host</code>.
+          </div>
+        </div>
+
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">MNT</span>
+            <h4>Mount Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own furniture and storage, arranged differently. Apartment A might have a bookshelf where Apartment B has a desk. They share the building's structure but have completely different interiors.
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> Mount points — the filesystem tree. Each container sees its own root filesystem (from the image) and any mounted volumes, without seeing the host's files or other containers' files.
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> MariaDB sees <code>/var/lib/mysql</code> as its database directory (mounted from <code>mariadb_data</code>). WordPress sees <code>/var/www/html</code> as its web root. Neither can access the other's files unless they share a volume (like <code>wordpress_data</code> shared by nginx, wordpress, and ftp).
+          </div>
+        </div>
+
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">UTS</span>
+            <h4>UTS Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own door nameplate. Apartment A might say "The Smiths", Apartment B might say "The Johnsons" — different names, same building.
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> The hostname and domain name. Each container can have its own hostname without affecting others. UTS stands for "UNIX Time-Sharing" (a historical term).
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> The <code>container_name</code> directive sets the hostname. When you <code>docker exec -it mariadb bash</code>, the shell prompt shows <code>root@mariadb</code>. Docker's DNS resolves this hostname to the container's IP on the bridge network.
+          </div>
+        </div>
+
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">IPC</span>
+            <h4>IPC Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own internal intercom system and shared bulletin board. Messages left on Apartment A's bulletin board are invisible to Apartment B.
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> Inter-process communication resources: shared memory segments, message queues, and semaphores. Processes in one container cannot access IPC resources of another container.
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> If MariaDB uses shared memory for internal communication between its threads, that shared memory is invisible to processes in the WordPress container. This prevents data leaks and interference between services.
+          </div>
+        </div>
+
+        <div class="namespace-card">
+          <div class="ns-header">
+            <span class="ns-badge">USER</span>
+            <h4>User Namespace</h4>
+          </div>
+          <div class="ns-analogy">
+            <strong>Analogy:</strong> Each apartment has its own "owner" and "tenant" roles. You might be the "owner" (root) inside your apartment, but you're just a regular resident of the building (unprivileged user on the host).
+          </div>
+          <div class="ns-technical">
+            <strong>What it isolates:</strong> User and group IDs. A process can be UID 0 (root) inside the container but mapped to a non-root UID on the host. This adds a security layer — even if a container process escapes, it has limited host privileges.
+          </div>
+          <div class="ns-docker">
+            <strong>In Docker:</strong> The MariaDB script reads secrets and starts the server as root inside the container, then the server runs as the <code>mysql</code> user. WordPress runs PHP-FPM as <code>www-data</code>. These are container-local users — the actual host UIDs may differ.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CGROUPS -->
+    <div class="internals-section fade-in">
+      <h3 class="internals-title">Linux Control Groups (cgroups)</h3>
+      <div class="analogy-box">
+        <div class="analogy-icon">🏗️</div>
+        <div class="analogy-content">
+          <h4>The Building Resource Manager Analogy</h4>
+          <p>Imagine the apartment building has limited resources: a finite amount of <strong>electricity</strong>, <strong>water</strong>, and <strong>heating capacity</strong>. Without controls, one apartment could run all their appliances at maximum and consume everything, leaving other apartments without power.</p>
+          <p>The building manager installs <strong>individual meters and circuit breakers</strong> for each apartment. Each apartment gets a fair share of resources, and if one apartment tries to use too much electricity, its circuit breaker trips — protecting the rest of the building.</p>
+          <p>Linux cgroups work exactly the same way for containers — they limit and account for resource usage per container.</p>
+        </div>
+      </div>
+
+      <div class="cgroup-cards">
+        <div class="cgroup-card">
+          <div class="cgroup-icon">⚡</div>
+          <h4>CPU Limits</h4>
+          <p>Like an electricity allowance per apartment. You can limit how much CPU time a container gets. A container using too much CPU won't slow down other containers — the kernel's scheduler enforces the limit.</p>
+          <p class="cgroup-example">Example: Limit MariaDB to 2 CPU cores so it can't monopolize the processor during heavy queries.</p>
+        </div>
+        <div class="cgroup-card">
+          <div class="cgroup-icon">🧠</div>
+          <h4>Memory Limits</h4>
+          <p>Like a water tank per apartment. Each container gets a maximum amount of RAM. If a container tries to use more than its limit, the kernel's OOM (Out-of-Memory) killer terminates it — preventing one runaway process from crashing the entire host.</p>
+          <p class="cgroup-example">Example: Limit Redis to 256MB so it doesn't consume all available RAM with cached data.</p>
+        </div>
+        <div class="cgroup-card">
+          <div class="cgroup-icon">📋</div>
+          <h4>Process Limits</h4>
+          <p>Like a limit on how many people can live in each apartment. Controls the maximum number of processes a container can create, preventing fork bombs or runaway process creation.</p>
+          <p class="cgroup-example">Example: Limit WordPress to 100 processes to prevent a PHP-FPM misconfiguration from spawning unlimited workers.</p>
+        </div>
+        <div class="cgroup-card">
+          <div class="cgroup-icon">📊</div>
+          <h4>Resource Accounting</h4>
+          <p>Like the building's utility meters. Cgroups track exactly how much CPU, memory, disk I/O, and network each container uses. This data is what <code>docker stats</code> reads to show you real-time resource usage per container.</p>
+          <p class="cgroup-example">Command: <code>docker stats</code> shows live CPU %, memory usage, network I/O, and block I/O for every running container.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filesystem Isolation -->
+    <div class="internals-section fade-in">
+      <h3 class="internals-title">Filesystem Isolation</h3>
+      <div class="fs-explanation">
+        <div class="fs-card">
+          <h4>OverlayFS — Union Filesystem</h4>
+          <p>Docker uses <strong>OverlayFS</strong> to create the illusion that each container has its own complete filesystem. It works by layering:</p>
+          <ol>
+            <li><strong>Lower layers</strong> (read-only) — The image layers from the Dockerfile (<code>debian:bookworm-slim</code> + packages + configs)</li>
+            <li><strong>Upper layer</strong> (writable) — The container's working layer where runtime changes are stored</li>
+            <li><strong>Merged view</strong> — What the container actually sees — a unified filesystem</li>
+          </ol>
+          <p>When a container modifies a file from a lower layer, OverlayFS performs <strong>copy-on-write</strong>: it copies the file to the upper layer and modifies the copy, leaving the original image layer untouched. This is why multiple containers can share the same base image without interfering with each other.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p>Inception — 42 Project by <strong>oobbad</strong></p>
+      <p class="footer-tech">Built with Three.js • Vanilla JS • No frameworks</p>
+    </div>
+  </footer>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/scene.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
