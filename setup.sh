@@ -142,7 +142,7 @@ apply_defaults() {
     # --- .env defaults (same values you already use for testing) ----------
     if [ "$env_missing" = true ]; then
         create_env_file \
-            "oualid" \
+        	"${USER}" \
             "oobbad.42.fr" \
             "inception_db" \
             "inception_user" \
@@ -173,8 +173,7 @@ ask_manually() {
     # --- .env variables ---------------------------------------------------
     if [ "$env_missing" = true ]; then
         echo -e "${YELLOW}── .env variables ──${RESET}"
-
-        read -rp "LOGIN [oualid]: "                  v_login;          v_login=${v_login:-oualid}
+        v_login=${USER}
         read -rp "DOMAIN_NAME [oobbad.42.fr]: "      v_domain;         v_domain=${v_domain:-oobbad.42.fr}
         read -rp "MYSQL_DATABASE [inception_db]: "    v_mysql_db;       v_mysql_db=${v_mysql_db:-inception_db}
         read -rp "MYSQL_USER [inception_user]: "      v_mysql_user;     v_mysql_user=${v_mysql_user:-inception_user}
